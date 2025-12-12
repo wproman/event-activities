@@ -22,8 +22,7 @@ if (accessToken) {
         );
 
         if (typeof verifiedToken === "string") {
-            // cookieStore.delete("accessToken");
-            // cookieStore.delete("refreshToken");
+         
             await deleteCookie("accessToken")
             await deleteCookie("refreshToken")
 
@@ -36,8 +35,8 @@ if (accessToken) {
         console.error("Token verification failed:", error);
         // cookieStore.delete("accessToken");
         // cookieStore.delete("refreshToken");
-        // await deleteCookie("accessToken")
-        //     await deleteCookie("refreshToken")
+        await deleteCookie("accessToken")
+            await deleteCookie("refreshToken")
         return NextResponse.redirect(new URL('/login', request.url));
     }
 }
