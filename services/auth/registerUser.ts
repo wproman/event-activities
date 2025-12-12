@@ -1,22 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server"
 
-import z from "zod";
+import { registerValidationZodSchema } from "@/app/zod/auth.validation";
 import { loginUser } from "./loginUser";
 
-// Zod schema আপনার IUser interface অনুযায়ী
-const registerValidationZodSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    fullName: z.string().min(1, { message: "Full name is required" }),
-    email: z.string().email({ message: "Valid email is required" }),
-    password: z.string().min(6, { 
-        message: "Password is required and must be at least 6 characters long",
-    }),
-    bio: z.string().optional(),
-    avatarUrl: z.string().optional(),
-    city: z.string().optional(),
-    interests: z.string().optional(), 
-});
+
+
 
 export const registerUser = async (_currentState: any, formData: FormData): Promise<any> => {
     try {
