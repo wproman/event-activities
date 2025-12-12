@@ -3,7 +3,8 @@
 "use client";
 
 import { loginUser } from "@/services/auth/loginUser";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
@@ -22,7 +23,11 @@ const LoginForm = ({redirect }: { redirect?: string }) => {
     }
     return null;
   };
-  
+   useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
   return (
     <form action={formAction}>
        {redirect && <input type="hidden" name="redirect" value={redirect} />}

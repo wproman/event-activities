@@ -14,7 +14,7 @@ type NavItem = {
   label: string;
 };
 
-const Navbar = async () => {
+const PublicNavbar = async () => {
   const accessToken = await getCookie("accessToken");
   const userRole = accessToken
     ? await getCookie("userRole") || "USER"
@@ -168,4 +168,4 @@ const Navbar = async () => {
   );
 };
 
-export default Navbar;
+export default PublicNavbar;
