@@ -4,6 +4,7 @@
 import { registerUser } from "@/services/auth/registerUser";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+import InputFieldError from "./shared/InputFieldError";
 import { Button } from "./ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
@@ -12,18 +13,7 @@ const RegisterForm = () => {
   const [state, formAction, isPending] = useActionState(registerUser, null);
   console.log(state, "state", isPending, "isPending");
 
-  const getFieldError = (fieldName: string) => {
-    if (state && !state.success && state.errors) {
-      const error = state.errors.find((err: any) => err.field === fieldName);
-      if (error) {
-        return error.message;
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  };
+
 
      useEffect(() => {
       if (state && !state.success && state.message) {
@@ -38,11 +28,7 @@ return (
           <Field>
             <FieldLabel htmlFor="name">Full Name</FieldLabel>
             <Input id="name" name="name" type="text" placeholder="John Doe" />
-            {getFieldError("name") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("name")}
-              </FieldDescription>
-            )}
+          <InputFieldError field="name" state = {state}/>
           </Field>
 
           {/* Email */}
@@ -54,22 +40,14 @@ return (
               type="email"
               placeholder="m@example.com"
             />
-            {getFieldError("email") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("email")}
-              </FieldDescription>
-            )}
+          <InputFieldError field="email" state = {state}/>
           </Field>
 
           {/* Password */}
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input id="password" name="password" type="password" />
-            {getFieldError("password") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("password")}
-              </FieldDescription>
-            )}
+           <InputFieldError field="password" state = {state}/>
           </Field>
 
           {/* Bio */}
@@ -81,11 +59,7 @@ return (
               type="text"
               placeholder="Write a short bio..."
             />
-            {getFieldError("bio") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("bio")}
-              </FieldDescription>
-            )}
+            <InputFieldError field="bio" state = {state}/>
           </Field>
 
           {/* Avatar URL */}
@@ -113,11 +87,7 @@ return (
               type="text"
               placeholder="Dhaka"
             />
-            {getFieldError("city") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("city")}
-              </FieldDescription>
-            )}
+           <InputFieldError field="city" state = {state}/>
           </Field>
 
           {/* Interests */}
@@ -131,11 +101,7 @@ return (
               type="text"
               placeholder="sports, coding, travel"
             />
-            {getFieldError("interests") && (
-              <FieldDescription className="text-red-600">
-                {getFieldError("interests")}
-              </FieldDescription>
-            )}
+            <InputFieldError field="interests" state = {state}/>
           </Field>
         </div>
 
