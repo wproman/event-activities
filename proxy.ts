@@ -13,9 +13,13 @@ export async function proxy(request: NextRequest) {
 
     const accessToken = request.cookies.get("accessToken")?.value || null;
 
-    let userRole: UserRole | null = null;
-    if (accessToken) {
-        const verifiedToken: JwtPayload | string = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string);
+   let userRole: UserRole | null = null;
+if (accessToken) {
+    try {
+        const verifiedToken: JwtPayload | string = jwt.verify(
+            accessToken, 
+            process.env.JWT_ACCESS_SECRET as string
+        );
 
         if (typeof verifiedToken === "string") {
             cookieStore.delete("accessToken");
@@ -24,7 +28,14 @@ export async function proxy(request: NextRequest) {
         }
 
         userRole = verifiedToken.role;
+    } catch (error) {
+        // Token is invalid, expired, or malformed
+        console.error("Token verification failed:", error);
+        cookieStore.delete("accessToken");
+        cookieStore.delete("refreshToken");
+        return NextResponse.redirect(new URL('/login', request.url));
     }
+}
 
     const routerOwner = getRouteOwner(pathname);
     //path = /doctor/appointments => "DOCTOR"
