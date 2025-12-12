@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use server"
+
+import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/lib/auth-utils";
 import { parse } from "cookie";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
-// import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/lib/auth-utils";
-import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/lib/auth-utils";
 
 const loginValidationZodSchema = z.object({
-     email: z.email({
+    email: z.email({
         message: "Email is required",
     }),
     password: z.string("Password is required").min(6, {
@@ -20,10 +19,9 @@ const loginValidationZodSchema = z.object({
     }),
 });
 
-export const loginUser = async (_currentState: any, formData: FormData): Promise<any> => {
+export const loginUser = async (_currentState: any, formData: any): Promise<any> => {
     try {
         const redirectTo = formData.get('redirect') || null;
-        console.log("redirct form server action", redirectTo)
         let accessTokenObject: null | any = null;
         let refreshTokenObject: null | any = null;
         const loginData = {
@@ -32,7 +30,7 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
         }
 
         const validatedFields = loginValidationZodSchema.safeParse(loginData);
-          console.log("validateFields",validatedFields)
+
         if (!validatedFields.success) {
             return {
                 success: false,
@@ -51,10 +49,9 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             headers: {
                 "Content-Type": "application/json",
             },
-        })
+        });
 
-
-         const setCookieHeaders = res.headers.getSetCookie();
+        const setCookieHeaders = res.headers.getSetCookie();
 
         if (setCookieHeaders && setCookieHeaders.length > 0) {
             setCookieHeaders.forEach((cookie: string) => {
@@ -96,7 +93,7 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             path: refreshTokenObject.Path || "/",
             sameSite: refreshTokenObject['SameSite'] || "none",
         });
-        const verifiedToken: JwtPayload | string = jwt.verify(accessTokenObject.accessToken, process.env.JWT_SECRET as string);
+        const verifiedToken: JwtPayload | string = jwt.verify(accessTokenObject.accessToken, process.env.JWT_ACCESS_SECRET as string);
 
         if (typeof verifiedToken === "string") {
             throw new Error("Invalid token");
@@ -114,7 +111,7 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
                 redirect(getDefaultDashboardRoute(userRole));
             }
         }
-
+ redirect(getDefaultDashboardRoute(userRole));
     } catch (error: any) {
         // Re-throw NEXT_REDIRECT errors so Next.js can handle them
         if (error?.digest?.startsWith('NEXT_REDIRECT')) {
