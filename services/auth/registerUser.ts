@@ -2,6 +2,7 @@
 "use server"
 
 import z from "zod";
+import { loginUser } from "./loginUser";
 
 // Zod schema আপনার IUser interface অনুযায়ী
 const registerValidationZodSchema = z.object({
@@ -74,13 +75,23 @@ export const registerUser = async (_currentState: any, formData: FormData): Prom
         // API call
         const res = await fetch("http://localhost:5000/api/v1/auth/register", {
             method: "POST",
-          
             body: newFormData
-        }).then(res => res.json());
+        })
 
-      return res;
+     const result = await res.json();
 
-    } catch (error) {
+        console.log(res, "res");
+
+        if (result.success) {
+            await loginUser(_currentState, formData);
+        }
+
+        return result;
+
+    } catch (error: any) {
+         if (error?.digest?.startsWith('NEXT_REDIRECT')) {
+            throw error;
+        }
         console.log("Registration error:", error);
         return { error: "Registration failed" };
     }

@@ -1,14 +1,14 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute, UserRole } from './lib/auth-utils';
+import { deleteCookie } from './services/auth/tokenHandlers';
 
 
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
-    const cookieStore = await cookies()
+
     const pathname = request.nextUrl.pathname;
 
     const accessToken = request.cookies.get("accessToken")?.value || null;
@@ -22,8 +22,11 @@ if (accessToken) {
         );
 
         if (typeof verifiedToken === "string") {
-            cookieStore.delete("accessToken");
-            cookieStore.delete("refreshToken");
+            // cookieStore.delete("accessToken");
+            // cookieStore.delete("refreshToken");
+            await deleteCookie("accessToken")
+            await deleteCookie("refreshToken")
+
             return NextResponse.redirect(new URL('/login', request.url));
         }
 
@@ -31,8 +34,10 @@ if (accessToken) {
     } catch (error) {
         // Token is invalid, expired, or malformed
         console.error("Token verification failed:", error);
-        cookieStore.delete("accessToken");
-        cookieStore.delete("refreshToken");
+        // cookieStore.delete("accessToken");
+        // cookieStore.delete("refreshToken");
+        // await deleteCookie("accessToken")
+        //     await deleteCookie("refreshToken")
         return NextResponse.redirect(new URL('/login', request.url));
     }
 }

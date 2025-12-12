@@ -1,58 +1,171 @@
 // components/Navbar.tsx
-import Link from "next/link";
-// import { Button} from "@/components/ui/button";
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/lib/auth";
 
-export default async function Navbar() {
-//   const session = await getServerSession(authOptions);
-//   const user = session?.user;
-//   const role = user?.role; // "USER" | "HOST" | "ADMIN"
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import Link from "next/link";
+
+import { getCookie } from "@/services/auth/tokenHandlers";
+import LogoutButton from "./LogoutButton";
+
+// Define the type for navigation items
+type NavItem = {
+  href: string;
+  label: string;
+};
+
+const Navbar = async () => {
+  const accessToken = await getCookie("accessToken");
+  const userRole = accessToken
+    ? await getCookie("userRole") || "USER"
+    : null;
+
+  // Common nav items
+  const commonItems: NavItem[] = [
+    { href: "/events", label: "Explore Events" },
+  ];
+
+  // Role-specific items
+  const userItems: NavItem[] = [
+    { href: "/my-events", label: "My Events" },
+    { href: "/dashboard", label: "Dashboard" },
+  ];
+
+  const hostItems: NavItem[] = [
+    { href: "/events/create", label: "Create Event" },
+    { href: "/my-events", label: "My Events" },
+    { href: "/dashboard", label: "Dashboard" },
+  ];
+
+  const adminItems: NavItem[] = [
+    { href: "/admin/dashboard", label: "Admin Dashboard" },
+    { href: "/admin/users", label: "Manage Users" },
+    { href: "/admin/events", label: "Manage Events" },
+  ];
+
+  // Explicitly type the variable
+  let roleSpecificItems: NavItem[] = [];
+
+  if (userRole === "ADMIN") {
+    roleSpecificItems = adminItems;
+  } else if (userRole === "HOST") {
+    roleSpecificItems = hostItems;
+  } else if (userRole === "USER") {
+    roleSpecificItems = userItems;
+  }
+
+  const desktopNavItems: NavItem[] = accessToken
+    ? [...commonItems, ...roleSpecificItems]
+    : commonItems;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-primary">
-          GatherUp
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <span className="text-2xl font-bold text-primary">GatherUp</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
-          <Link href="/events" className="text-muted-foreground hover:text-foreground">Explore Events</Link>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
+          {desktopNavItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
-          {/* {!user ? (
+        {/* Desktop Auth Buttons */}
+        <div className="hidden md:flex items-center space-x-3">
+          {accessToken ? (
             <>
-              <Link href="/auth/become-host">Become a Host</Link>
-              <Link href="/login">Login</Link>
-              <Button asChild>
-                <Link href="/register">Sign Up</Link>
-              </Button>
-            </>
-          ) : role === "ADMIN" ? (
-            <>
-              <Link href="/admin/dashboard">Admin Dashboard</Link>
-              <Link href="/profile/me">Profile</Link>
-              <form action="/api/auth/signout" method="post">
-                <Button variant="ghost">Logout</Button>
-              </form>
-            </>
-          ) : role === "HOST" ? (
-            <>
-              <Link href="/events/create">Create Event</Link>
-              <Link href="/my-events">My Events</Link>
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/profile/me">Profile</Link>
-              <Button variant="ghost">Logout</Button>
+              <Link href="/profile/me">
+                <Button variant="ghost">Profile</Button>
+              </Link>
+              <LogoutButton />
             </>
           ) : (
             <>
-              <Link href="/my-events">My Events</Link>
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/profile/me">Profile</Link>
-              <Button variant="ghost">Logout</Button>
+              <Link href="/login">
+                <Button variant="ghost">Login</Button>
+              </Link>
+              <Link href="/register">
+                <Button>Sign Up</Button>
+              </Link>
             </>
-          )} */}
-        </nav>
+          )}
+        </div>
+
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <div className="flex flex-col space-y-6 mt-8">
+                {/* Common Links */}
+                {commonItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="text-lg font-medium hover:text-primary transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+
+                {/* Role-specific Links (Logged In) */}
+                {accessToken && roleSpecificItems.length > 0 && (
+                  <>
+                    <div className="border-t pt-6" />
+                    {roleSpecificItems.map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        className="text-lg font-medium hover:text-primary transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </>
+                )}
+
+                {/* Auth Section */}
+                <div className="border-t pt-6 space-y-4">
+                  {accessToken ? (
+                    <>
+                      <Link href="/profile/me" className="block">
+                        <Button variant="outline" className="w-full">Profile</Button>
+                      </Link>
+                      <LogoutButton />
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login">
+                        <Button variant="outline" className="w-full">Login</Button>
+                      </Link>
+                      <Link href="/register">
+                        <Button className="w-full">Sign Up</Button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
-}
+};
+
+export default Navbar;
