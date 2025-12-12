@@ -93,7 +93,7 @@ export const registerUser = async (_currentState: any, formData: FormData): Prom
             throw error;
         }
         console.log("Registration error:", error);
-        return { error: "Registration failed" };
+            return { success: false, message: `${process.env.NODE_ENV === 'development' ? error.message : "Login Failed. You might have entered incorrect email or password."}` };
     }
 
     
