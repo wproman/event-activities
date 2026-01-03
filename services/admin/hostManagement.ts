@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server"
 
-import { IUser } from "@/app/types/host.interface";
+import { User } from "@/app/types";
 import { createHostZodValidationSchema, updateHostZodValidationSchema } from "@/app/zod/host.validation";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zodValidator";
 
-
-
-
-
 export async function createHost(_prevState: any, formData: FormData) {
     try {
-        const payload: IUser = {
+        const payload: Partial<User> = {
             name: formData.get("name") as string,
             email: formData.get("email") as string,
             password: formData.get("password") as string,
-            fullName: formData.get("fullName") as string,
-            bio: formData.get("bio") as string || null,
-            avatarUrl: formData.get("avatarUrl") as string || "",
+            bio: formData.get("bio") as string || undefined,
+            avatarUrl: formData.get("avatarUrl") as string || undefined,
             interests: (formData.get("interests") as string)?.split(",") || [],
-            city: formData.get("city") as string || null,
+            city: formData.get("city") as string || undefined,
             needPasswordChange: formData.get("needPasswordChange") === "true",
+            // Set default values for required fields
+            role: 'HOST' as const,
+            ratingAvg: 0,
+            ratingCount: 0,
+            status: 'ACTIVE' as const,
         }
         
         if (zodValidator(payload, createHostZodValidationSchema).success === false) {
@@ -38,7 +38,6 @@ export async function createHost(_prevState: any, formData: FormData) {
            name: formData.get("name") as string,
             email: formData.get("email") as string,
             password: formData.get("password") as string,
-            fullName: formData.get("fullName") as string,
             bio: formData.get("bio") as string || null,
             avatarUrl: formData.get("avatarUrl") as string || null,
             interests: (formData.get("interests") as string)?.split(",") || [],
@@ -71,7 +70,7 @@ export async function createHost(_prevState: any, formData: FormData) {
 
 export async function getHosts(queryString?: string) {
     try {
-        const response = await serverFetch.get(`/host${queryString ? `?${queryString}` : ""}`);
+        const response = await serverFetch.get(`/admin/all-hosts/${queryString ? `?${queryString}` : ""}`);
         const result = await response.json();
         return result;
     } catch (error: any) {
@@ -99,13 +98,12 @@ export async function getHostById(id: string) {
 
 export async function updateHost(id: string, _prevState: any, formData: FormData) {
     try {
-        const payload: Partial<IUser> = {
+        const payload: Partial<User> = {
             name: formData.get("name") as string,
-            fullName: formData.get("fullName") as string,
-            bio: formData.get("bio") as string || null,
-            avatarUrl: formData.get("avatarUrl") as string || null,
+            bio: formData.get("bio") as string || undefined,
+            avatarUrl: formData.get("avatarUrl") as string || undefined,
             interests: (formData.get("interests") as string)?.split(",") || [],
-            city: formData.get("city") as string || null,
+            city: formData.get("city") as string || undefined,
             ratingAvg: formData.get("ratingAvg") ? Number(formData.get("ratingAvg")) : undefined,
             ratingCount: formData.get("ratingCount") ? Number(formData.get("ratingCount")) : undefined,
             needPasswordChange: formData.get("needPasswordChange") === "true",

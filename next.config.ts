@@ -1,8 +1,20 @@
-import type { NextConfig } from "next";
+// next.config.js
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cloudinary.com',
+        pathname: '/**',
+      },
+      // Add other domains your app uses
+    ],
+  },
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
-};
-
-export default nextConfig;
+module.exports = nextConfig

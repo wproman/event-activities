@@ -1,18 +1,15 @@
 // app/(dashboardLayout)/admin/dashboard/events-management/page.tsx
 
-
-
 import EventsTable from "@/components/modules/Admin/EventManagement/EventsTable";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { queryStringFormatter } from "@/lib/formatters";
-import { getEvents } from "@/services/admin/eventManagement";
+import allEvents from "@/services/event/allEvent";
 import { Suspense } from "react";
 
-
-// Create a header component similar to HostsManagementHeader
+// Header Component
 const EventsManagementHeader = () => (
   <div>
     <h1 className="text-2xl font-bold text-gray-800">Events Management</h1>
@@ -28,13 +25,14 @@ const AdminEventsManagementPage = async ({
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
   
-  // Fetch data on the server
-  const eventsResult = await getEvents(queryString);
+  // Fetch events data
+  const eventsData = await allEvents();
   
-  // Calculate pagination safely
-  const totalPages = Math.ceil(
-    (eventsResult?.meta?.total || 0) / (eventsResult?.meta?.limit || 10)
-  );
+  // Convert to expected structure
+  const eventsList = Array.isArray(eventsData) ? eventsData : [];
+  
+  // Calculate pagination (adjust based on your API)
+  const totalPages = Math.ceil(eventsList.length / 10);
 
   return (
     <div className="space-y-6">
@@ -42,8 +40,8 @@ const AdminEventsManagementPage = async ({
       
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-600">
-          {eventsResult?.meta?.total 
-            ? `Showing ${eventsResult.meta.total} events` 
+          {eventsList.length > 0 
+            ? `Showing ${eventsList.length} events` 
             : 'No events found'
           }
         </div>
@@ -53,15 +51,15 @@ const AdminEventsManagementPage = async ({
         </div>
       </div>
       
-      {/* Pass the fetched events data to the client component */}
+      {/* Pass events data to client component */}
       <Suspense fallback={<TableSkeleton columns={7} rows={10} />}>
-        <EventsTable events={eventsResult?.data || []} />
+        <EventsTable events={eventsList} />
       </Suspense>
       
       {/* Add pagination if needed */}
       {totalPages > 1 && (
         <TablePagination
-          currentPage={eventsResult?.meta?.page || 1}
+          currentPage={1}
           totalPages={totalPages}
         />
       )}
