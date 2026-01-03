@@ -41,17 +41,28 @@ export const hostNavItems: NavSection[] = [
     {
         title: "Event Management",
         items: [
-            {
-                title: "Events",
-                href: "/host/dashboard/events",
-                icon: "Calendar", // ✅ String
-                badge: "3",
+              {
+              
+                title: "My Events",
+                href: "/host/dashboard/my-events",
+                icon: "Event", // ✅ String
+                // badge: "3",
                 roles: ["HOST"],
             },
             {
-                title: "My events Schedules",
-                href: "/host/dashboard/my-events-schedules",
-                icon: "Clock", // ✅ String
+              
+                title: "Manage User",
+                href: "/host/dashboard/manage-participants",
+                icon: "participants", // ✅ String
+                // badge: "3",
+                roles: ["HOST"],
+            },
+            {
+              
+                title: "Manage Payments",
+                href: "/host/dashboard/my-payments",
+                icon: "participants", // ✅ String
+                // badge: "3",
                 roles: ["HOST"],
             },
             // {
