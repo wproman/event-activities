@@ -1,16 +1,26 @@
-// app/(dashboardLayout)/admin/dashboard/hosts-management/page.tsx
+// app/(dashboardLayout)/admin/dashboard/events-management/page.tsx
 
-import HostsManagementHeader from "@/components/modules/Admin/HostsManagement/HostsManagementHeader";
-import HostsTable from "@/components/modules/Admin/HostsManagement/HostsTable";
+
+
+import EventsTable from "@/components/modules/Admin/EventManagement/EventsTable";
 import RefreshButton from "@/components/shared/RefreshButton";
 import SearchFilter from "@/components/shared/SearchFilter";
 import TablePagination from "@/components/shared/TablePagination";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { queryStringFormatter } from "@/lib/formatters";
-import { getHosts } from "@/services/admin/hostManagement";
+import { getEvents } from "@/services/admin/eventManagement";
 import { Suspense } from "react";
 
-const AdminHostsManagementPage = async ({
+
+// Create a header component similar to HostsManagementHeader
+const EventsManagementHeader = () => (
+  <div>
+    <h1 className="text-2xl font-bold text-gray-800">Events Management</h1>
+    <p className="text-gray-600 mt-1">Manage and approve events</p>
+  </div>
+);
+
+const AdminEventsManagementPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -19,39 +29,39 @@ const AdminHostsManagementPage = async ({
   const queryString = queryStringFormatter(searchParamsObj);
   
   // Fetch data on the server
-  const hostsResult = await getHosts(queryString);
+  const eventsResult = await getEvents(queryString);
   
   // Calculate pagination safely
   const totalPages = Math.ceil(
-    (hostsResult?.meta?.total || 0) / (hostsResult?.meta?.limit || 10)
+    (eventsResult?.meta?.total || 0) / (eventsResult?.meta?.limit || 10)
   );
 
   return (
     <div className="space-y-6">
-      <HostsManagementHeader />
+      <EventsManagementHeader />
       
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-600">
-          {hostsResult?.meta?.total 
-            ? `Showing ${hostsResult.meta.total} hosts` 
-            : 'No hosts found'
+          {eventsResult?.meta?.total 
+            ? `Showing ${eventsResult.meta.total} events` 
+            : 'No events found'
           }
         </div>
         <div className="flex space-x-2">
-          <SearchFilter paramName="searchTerm" placeholder="Search hosts..." />
+          <SearchFilter paramName="searchTerm" placeholder="Search events..." />
           <RefreshButton />
         </div>
       </div>
       
-      {/* Pass the fetched hosts data to the client component */}
-      <Suspense fallback={<TableSkeleton columns={5} rows={10} />}>
-        <HostsTable hosts={hostsResult?.data || []} />
+      {/* Pass the fetched events data to the client component */}
+      <Suspense fallback={<TableSkeleton columns={7} rows={10} />}>
+        <EventsTable events={eventsResult?.data || []} />
       </Suspense>
       
       {/* Add pagination if needed */}
       {totalPages > 1 && (
         <TablePagination
-          currentPage={hostsResult?.meta?.page || 1}
+          currentPage={eventsResult?.meta?.page || 1}
           totalPages={totalPages}
         />
       )}
@@ -59,8 +69,7 @@ const AdminHostsManagementPage = async ({
   );
 };
 
-export default AdminHostsManagementPage;
+export default AdminEventsManagementPage;
 
-// Optional: Add these to prevent caching if needed
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
