@@ -1,29 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use server"
 
-import z from "zod";
+import { registerValidationZodSchema } from "@/app/zod/auth.validation";
+import { serverFetch } from "@/lib/server-fetch";
+import { zodValidator } from "@/lib/zodValidator";
 import { loginUser } from "./loginUser";
 
-// Zod schema আপনার IUser interface অনুযায়ী
-const registerValidationZodSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    fullName: z.string().min(1, { message: "Full name is required" }),
-    email: z.string().email({ message: "Valid email is required" }),
-    password: z.string().min(6, { 
-        message: "Password is required and must be at least 6 characters long",
-    }),
-    bio: z.string().optional(),
-    avatarUrl: z.string().optional(),
-    city: z.string().optional(),
-    interests: z.string().optional(), 
-});
+
+
 
 export const registerUser = async (_currentState: any, formData: FormData): Promise<any> => {
     try {
      
 
         // FormData থেকে values নেওয়া
-        const validationData = {
+        const payload = {
             name: formData.get('name')?.toString()?.trim() || '',
             fullName: formData.get('name')?.toString()?.trim() || '',
             email: formData.get('email')?.toString()?.trim() || '',
@@ -34,33 +26,23 @@ export const registerUser = async (_currentState: any, formData: FormData): Prom
             interests: formData.get('interests')?.toString()?.trim() || '',
         }
 
-        console.log("Validation Data:", validationData);
 
-        const validatedFields = registerValidationZodSchema.safeParse(validationData);
 
-        console.log("Validation Result:", validatedFields);
-
-        if (!validatedFields.success) {
-            return {
-                success: false,
-                errors: validatedFields.error.issues.map(issue => ({
-                    field: issue.path[0],
-                    message: issue.message,
-                }))
-            }
-        }
-
+if(zodValidator(payload,registerValidationZodSchema).success === false){
+    return zodValidator(payload, registerValidationZodSchema)
+}
+const validatedPayload : any = zodValidator(payload, registerValidationZodSchema).data
         // API-এর জন্য data prepare করা
         const registerData = {
-            name: validatedFields.data.name,
-            fullName: validatedFields.data.fullName,
-            email: validatedFields.data.email,
-            password: validatedFields.data.password,
-            ...(validatedFields.data.bio && { bio: validatedFields.data.bio }),
-            ...(validatedFields.data.avatarUrl && { avatarUrl: validatedFields.data.avatarUrl }),
-            ...(validatedFields.data.city && { city: validatedFields.data.city }),
-            ...(validatedFields.data.interests && { 
-                interests: validatedFields.data.interests.split(',').map(i => i.trim()).filter(i => i)
+            name: validatedPayload.name,
+            fullName: validatedPayload.fullName,
+            email: validatedPayload.email,
+            password: validatedPayload.password,
+            ...(validatedPayload.bio && { bio: validatedPayload.bio }),
+            ...(validatedPayload.avatarUrl && { avatarUrl: validatedPayload.avatarUrl }),
+            ...(validatedPayload.city && { city: validatedPayload.city }),
+            ...(validatedPayload.interests && { 
+                interests: validatedPayload.interests.split(',').map((i: string) => i.trim()).filter((i: any) => i)
             }),
             role: "USER", // default role
             needPasswordChange: true,
@@ -68,19 +50,21 @@ export const registerUser = async (_currentState: any, formData: FormData): Prom
             ratingCount: 0
         }
 
-        console.log("Sending to API:", registerData);
+        
             const newFormData = new FormData();
             newFormData.append("data", JSON.stringify(registerData));
-
+   if(formData.get("file")) {
+    newFormData.append("file", formData.get("file")as Blob)
+   }
         // API call
-        const res = await fetch("http://localhost:5000/api/v1/auth/register", {
-            method: "POST",
+        const res = await serverFetch.post("/auth/register", {
+          
             body: newFormData
         })
 
      const result = await res.json();
 
-        console.log(res, "res");
+      
 
         if (result.success) {
             await loginUser(_currentState, formData);
