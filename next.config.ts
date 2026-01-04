@@ -2,10 +2,16 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      // Cloudinary
+      // Cloudinary with subdomains (like res.cloudinary.com)
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        hostname: '*.cloudinary.com',
+        pathname: '/**',
+      },
+      // Cloudinary without subdomain (cloudinary.com)
+      {
+        protocol: 'https',
+        hostname: 'cloudinary.com',
         pathname: '/**',
       },
       // Placeholder images
@@ -19,20 +25,14 @@ const nextConfig = {
         hostname: 'placeholder.com',
         pathname: '/**',
       },
-      // Example domains from your data
+      // Example domains
       {
         protocol: 'https',
         hostname: 'example.com',
-        pathname: '/**',
-      },
-      // Cloudinary other subdomains
-      {
-        protocol: 'https',
-        hostname: '*.cloudinary.com',
         pathname: '/**',
       },
     ],
   },
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;

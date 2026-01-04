@@ -18,9 +18,9 @@ const deleteEvent =async (eventId:string) => {
       // English: Sending API request with eventId  
   
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${eventId}/delete`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${eventId}`,
         {
-          method: "PATCH",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             // Cookie: `accessToken=${accessToken}`, // PERFECT way

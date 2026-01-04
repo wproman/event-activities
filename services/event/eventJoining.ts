@@ -9,7 +9,7 @@ const eventJoining = async (eventId: string) => {
      const accessToken = await getCookie('accessToken')
      console.log("accessToken",accessToken);  
        console.log("in eventJoining befor cookie");
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${eventId}/join`, { 
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${eventId}/join`, { 
      method: "POST",
     credentials: "include",
     headers: {
@@ -17,8 +17,7 @@ const eventJoining = async (eventId: string) => {
       // "Cookie": `accessToken=${accessToken}`, 
        "Authorization": `Bearer ${accessToken}`,
     },
-      // যদি request body দরকার হয়, যেমন user info: 
-      // body: JSON.stringify({ userId: "user-id-here" }),
+    
     });
 
     if (!response.ok) {

@@ -22,7 +22,8 @@ const PublicNavbar = async () => {
 
   // Common nav items
   const commonItems: NavItem[] = [
-    { href: "/events", label: "Explore Events" },
+    { href: "/explore", label: "Explore Events" },
+    { href: "/events", label: "Become a Host" },
   ];
 
   // Role-specific items

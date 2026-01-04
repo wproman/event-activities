@@ -81,13 +81,13 @@ export const userNavItems: NavSection[] = [
         items: [
             {
                 title: "My events",
-                href: "/dashboard/my-events",
+                href: "/dashboard/my-event",
                 icon: "Calendar", // ✅ String
                 roles: ["USER"],
             },
             {
                 title: "Book events",
-                href: "/events",
+                href: "/dashboard/book-events",
                 icon: "ClipboardList", // ✅ String
                 roles: ["USER"],
             },

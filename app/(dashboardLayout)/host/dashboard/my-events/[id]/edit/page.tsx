@@ -1,40 +1,41 @@
-// app/(dashboardLayout)/host/create-event/page.tsx
+// app/(dashboardLayout)/host/events/[id]/edit/page.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { EVENT_TYPE_LABELS, EventType } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  ArrowLeft,
-  Calendar,
-  CheckCircle,
-  DollarSign,
-  Image as ImageIcon,
-  MapPin,
-  Tag,
-  Users
+    AlertCircle,
+    ArrowLeft,
+    Calendar,
+    CheckCircle,
+    DollarSign,
+    Image as ImageIcon,
+    MapPin,
+    Tag,
+    Users
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 // Define the form data type
@@ -49,11 +50,15 @@ interface EventFormData {
   isPaidEvent: boolean;
   eventType: EventType;
   maxParticipants: string;
+  status: string;
 }
 
-const CreateEventPage = () => {
+const EditEventPage = () => {
+  const params = useParams();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [eventId, setEventId] = useState<string>("");
   
   // Initial form state
   const [formData, setFormData] = useState<EventFormData>({
@@ -67,10 +72,84 @@ const CreateEventPage = () => {
     isPaidEvent: false,
     eventType: "OTHER",
     maxParticipants: "",
+    status: "OPEN"
   });
 
   // Form errors
   const [errors, setErrors] = useState<Partial<Record<keyof EventFormData, string>>>({});
+
+  // All event types
+  const allEventTypes: EventType[] = [
+    'CONCERT', 'HIKE', 'DINNER', 'GAME_NIGHT', 
+    'MEETUP', 'SPORT', 'ART', 'OTHER'
+  ];
+
+  // Status options
+  const statusOptions = [
+    { value: 'OPEN', label: 'Open' },
+    { value: 'CLOSED', label: 'Closed' },
+    { value: 'CANCELLED', label: 'Cancelled' },
+    { value: 'COMPLETED', label: 'Completed' }
+  ];
+
+  useEffect(() => {
+    const fetchEventData = async () => {
+      if (!params.id) return;
+      
+      const id = params.id as string;
+      setEventId(id);
+      
+      try {
+        setIsLoading(true);
+        
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${id}`,
+          {
+            credentials: 'include',
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch event: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          const event = result.data;
+          
+          // Format date for input field (YYYY-MM-DD)
+          const dateObj = new Date(event.date);
+          const formattedDate = dateObj.toISOString().split('T')[0];
+          
+          // Set form data
+          setFormData({
+            title: event.title || "",
+            description: event.description || "",
+            date: formattedDate,
+            location: event.location || "",
+            category: event.category || "",
+            imageUrl: event.imageUrl || "",
+            fee: event.fee?.toString() || "0",
+            isPaidEvent: event.isPaidEvent || false,
+            eventType: event.eventType || "OTHER",
+            maxParticipants: event.maxParticipants?.toString() || "",
+            status: event.status || "OPEN"
+          });
+        } else {
+          throw new Error("Event not found");
+        }
+      } catch (error: any) {
+        console.error("Error fetching event:", error);
+        toast.error(error.message || "Failed to load event data");
+        router.push("/host/dashboard/my-events");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEventData();
+  }, [params.id, router]);
 
   // Handle input changes
   const handleInputChange = (field: keyof EventFormData, value: string) => {
@@ -114,7 +193,7 @@ const CreateEventPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // FIXED: Handle form submission with proper authentication
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -126,8 +205,8 @@ const CreateEventPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare the event data - match the exact structure from your backend example
-      const eventData = {
+      // Prepare the event data for update
+      const updateData: any = {
         title: formData.title,
         description: formData.description,
         date: new Date(formData.date).toISOString(),
@@ -135,22 +214,30 @@ const CreateEventPage = () => {
         category: formData.category || null,
         imageUrl: formData.imageUrl || null,
         fee: parseFloat(formData.fee),
-        isPaidEvent: formData.isPaidEvent, // Make sure this is sent
+        isPaidEvent: formData.isPaidEvent,
         eventType: formData.eventType,
-        maxParticipants: formData.maxParticipants ? parseInt(formData.maxParticipants) : null,
+        status: formData.status,
       };
 
-      console.log("Submitting event data:", eventData);
+      // Only include maxParticipants if provided
+      if (formData.maxParticipants) {
+        updateData.maxParticipants = parseInt(formData.maxParticipants);
+      }
 
-      // DIRECT FETCH with proper authentication - matching your working backend call
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL || process.env.NEXT_PUBLIC_BASE_API_URL || 'http://localhost:5000/api/v1'}/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: 'include', // Important for cookie-based auth
-        body: JSON.stringify(eventData),
-      });
+      console.log("Updating event data:", updateData);
+
+      // Send PATCH request to update event
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${eventId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+          body: JSON.stringify(updateData),
+        }
+      );
 
       console.log("API Response status:", response.status);
 
@@ -158,7 +245,7 @@ const CreateEventPage = () => {
         const responseText = await response.text();
         console.error("API Error response:", responseText);
         
-        let errorMessage = `Failed to create event (Status: ${response.status})`;
+        let errorMessage = `Failed to update event (Status: ${response.status})`;
         
         try {
           const errorData = JSON.parse(responseText);
@@ -167,35 +254,23 @@ const CreateEventPage = () => {
           errorMessage = responseText || errorMessage;
         }
         
-        // Handle authentication errors specifically
-        if (response.status === 401) {
-          toast.error("Please log in again to create events");
-          setTimeout(() => {
-            router.push('/login');
-          }, 2000);
-        }
-        
         throw new Error(errorMessage);
       }
 
       const result = await response.json();
       console.log("API Success response:", result);
       
-      toast.success(result.message || "Event created successfully!");
+      toast.success(result.message || "Event updated successfully!");
       
-      // Redirect to the event page or events list
+      // Redirect to the event detail page
       setTimeout(() => {
-        if (result.data?.id) {
-          router.push(`/host/dashboard/my-events/${result.data.id}`);
-        } else {
-          router.push("/host/events");
-        }
+        router.push(`/host/dashboard/my-events/${eventId}`);
         router.refresh();
       }, 1500);
 
     } catch (error: any) {
-      console.error("Error creating event:", error);
-      toast.error(error.message || "Failed to create event. Please try again.");
+      console.error("Error updating event:", error);
+      toast.error(error.message || "Failed to update event. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -208,11 +283,16 @@ const CreateEventPage = () => {
     return tomorrow.toISOString().split('T')[0];
   };
 
-  // All event types
-  const allEventTypes: EventType[] = [
-    'CONCERT', 'HIKE', 'DINNER', 'GAME_NIGHT', 
-    'MEETUP', 'SPORT', 'ART', 'OTHER'
-  ];
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading event data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -221,20 +301,42 @@ const CreateEventPage = () => {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/host/events">
+              <Link href={`/host/dashboard/my-events/${eventId}`}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Events
+                Back to Event
               </Link>
             </Button>
           </div>
           
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Create New Event</h1>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl font-bold tracking-tight">Edit Event</h1>
+              <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                ID: {eventId.slice(0, 8)}...
+              </span>
+            </div>
             <p className="text-muted-foreground mt-2">
-              Fill in the details below to create your event
+              Update the details of your event
             </p>
           </div>
         </div>
+
+        {/* Alert for Important Notes */}
+        <Card className="mb-6 border-yellow-200 bg-yellow-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-medium text-yellow-800">Important Notes</p>
+                <ul className="text-sm text-yellow-700 space-y-1">
+                  <li>• Some changes may be restricted if participants have already joined</li>
+                  <li>• Changing event date or location may affect existing participants</li>
+                  <li>• Changing from free to paid will affect existing participants</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Form */}
         <form onSubmit={handleSubmit}>
@@ -249,7 +351,7 @@ const CreateEventPage = () => {
                     Basic Information
                   </CardTitle>
                   <CardDescription>
-                    Provide the essential details about your event
+                    Update the essential details about your event
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -356,6 +458,28 @@ const CreateEventPage = () => {
                   <CardTitle>Event Settings</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Status */}
+                  <div className="space-y-2">
+                    <Label>Event Status</Label>
+                    <Select
+                      value={formData.status}
+                      onValueChange={(value: string) => 
+                        handleInputChange("status", value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statusOptions.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   {/* Event Type */}
                   <div className="space-y-2">
                     <Label>Event Type</Label>
@@ -445,7 +569,7 @@ const CreateEventPage = () => {
                     Event Image
                   </CardTitle>
                   <CardDescription>
-                    Add an image to make your event stand out
+                    Update the event image
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -496,28 +620,39 @@ const CreateEventPage = () => {
                       {isSubmitting ? (
                         <>
                           <span className="animate-spin mr-2">⟳</span>
-                          Creating Event...
+                          Updating Event...
                         </>
                       ) : (
                         <>
                           <CheckCircle className="h-5 w-5 mr-2" />
-                          Create Event
+                          Update Event
                         </>
                       )}
                     </Button>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => router.back()}
-                    >
-                      Cancel
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => router.back()}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1"
+                        asChild
+                      >
+                        <Link href={`/host/dashboard/my-events/${eventId}`}>
+                          View Event
+                        </Link>
+                      </Button>
+                    </div>
 
                     <div className="text-xs text-muted-foreground text-center">
-                      <p>By creating this event, you agree to our Terms of Service.</p>
-                      <p>Events may be subject to review by administrators.</p>
+                      <p>All changes will be immediately visible to participants.</p>
                     </div>
                   </div>
                 </CardContent>
@@ -530,4 +665,4 @@ const CreateEventPage = () => {
   );
 };
 
-export default CreateEventPage;
+export default EditEventPage;
