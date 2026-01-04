@@ -1,5 +1,5 @@
 const HostDashboardPage = () => {
-  return <div>DoctorDashboardPage</div>;
+  return <div>HostDashboardPage</div>;
 };
 
 export default HostDashboardPage;
