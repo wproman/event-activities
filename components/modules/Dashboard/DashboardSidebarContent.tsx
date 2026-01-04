@@ -1,6 +1,5 @@
 "use client";
 
-
 import type { NavSection } from "@/app/types/dashboard.interface";
 import type { UserInfo } from "@/app/types/user.interface";
 import { Badge } from "@/components/ui/badge";
@@ -55,7 +54,7 @@ const DashboardSidebarContent = ({
                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
                         isActive
                           ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       )}
                     >
                       <Icon className="h-4 w-4" />
@@ -72,9 +71,7 @@ const DashboardSidebarContent = ({
                   );
                 })}
               </div>
-              {index < navItems.length - 1 && (
-                <Separator className="my-4" />
-              )}
+              {index < navItems.length - 1 && <Separator className="my-4" />}
             </div>
           ))}
         </nav>

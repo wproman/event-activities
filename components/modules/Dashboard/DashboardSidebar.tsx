@@ -7,9 +7,9 @@ import DashboardSidebarContent from "./DashboardSidebarContent";
 
 const DashboardSidebar = async () => {
   const userInfo = await getUserInfo();
-  
+
   if (!userInfo) {
-    redirect('/login');
+    redirect("/login");
     return null;
   }
 

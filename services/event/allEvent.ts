@@ -6,7 +6,7 @@ const allEvents = async (): Promise<any[]> => {
 
     const res = await fetch(url, {
       credentials: "include",
-      cache: 'no-store'
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -14,13 +14,17 @@ const allEvents = async (): Promise<any[]> => {
       console.log("Error response:", errorText);
       return [];
     }
-    
+
     const response = await res.json();
     console.log("API Response:", response);
-    
-    if (response.success && response.data && Array.isArray(response.data.events)) {
+
+    if (
+      response.success &&
+      response.data &&
+      Array.isArray(response.data.events)
+    ) {
       console.log(`Found ${response.data.events.length} events`);
-      
+
       // Transform the events to ensure correct data types
       return response.data.events.map((event: any) => ({
         ...event,
@@ -34,13 +38,12 @@ const allEvents = async (): Promise<any[]> => {
         updatedAt: new Date(event.updatedAt),
       }));
     }
-    
-    return [];
 
+    return [];
   } catch (error) {
     console.log("Catch error:", error);
     return [];
   }
-}
+};
 
 export default allEvents;

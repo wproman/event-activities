@@ -3,8 +3,8 @@ import { getCookie } from "../auth/tokenHandlers";
 
 const leaveEvent = async (eventId: string) => {
   try {
-    // Bangla: Client-side cookie থেকে accessToken নিচ্ছি  
-    // English: Getting token from client cookies  
+    // Bangla: Client-side cookie থেকে accessToken নিচ্ছি
+    // English: Getting token from client cookies
     const accessToken = await getCookie("accessToken");
 
     if (!accessToken) {
@@ -14,8 +14,8 @@ const leaveEvent = async (eventId: string) => {
       };
     }
 
-    // Bangla: API request eventId সহ পাঠানো হচ্ছে  
-    // English: Sending API request with eventId  
+    // Bangla: API request eventId সহ পাঠানো হচ্ছে
+    // English: Sending API request with eventId
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${eventId}/leave`,
@@ -24,12 +24,11 @@ const leaveEvent = async (eventId: string) => {
         headers: {
           "Content-Type": "application/json",
           // Cookie: `accessToken=${accessToken}`, // PERFECT way
-                 "Authorization": `Bearer ${accessToken}`,
-
+          Authorization: `Bearer ${accessToken}`,
         },
-        
+
         credentials: "include", // Cookies handled automatically
-      }
+      },
     );
 
     if (!response.ok) {
@@ -43,7 +42,7 @@ const leaveEvent = async (eventId: string) => {
 
     const data = await response.json();
 
-    return data
+    return data;
   } catch (error: any) {
     console.log(error);
     return {

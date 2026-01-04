@@ -1,17 +1,46 @@
 // components/modules/Event/EventFilter.tsx
 "use client";
 
-import { Event, EventParticipant, EventType, EventFilters as FilterType, Review, User } from "@/app/types";
+import {
+  Event,
+  EventParticipant,
+  EventType,
+  EventFilters as FilterType,
+  Review,
+  User,
+} from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, DollarSign, Filter, MapPin, Search, Users, X } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  Filter,
+  MapPin,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 
 // Union type for different use cases
@@ -47,7 +76,9 @@ type EventFiltersProps = UserEventsProps | BookEventsProps;
 
 const EventFilters = (props: EventFiltersProps) => {
   // State for user events filter
-  const [userEventsFilter, setUserEventsFilter] = useState<"UPCOMING" | "PAST">("UPCOMING");
+  const [userEventsFilter, setUserEventsFilter] = useState<"UPCOMING" | "PAST">(
+    "UPCOMING",
+  );
 
   // Handle USER_EVENTS mode
   if (props.mode === "USER_EVENTS") {
@@ -56,7 +87,9 @@ const EventFilters = (props: EventFiltersProps) => {
 
     const filteredEvents = eventAndParticipants?.filter((item) => {
       const eventDate = new Date(item.event?.date || "");
-      return userEventsFilter === "UPCOMING" ? eventDate >= now : eventDate < now;
+      return userEventsFilter === "UPCOMING"
+        ? eventDate >= now
+        : eventDate < now;
     });
 
     return (
@@ -66,7 +99,9 @@ const EventFilters = (props: EventFiltersProps) => {
             <CardTitle className="text-xl">My Registered Events</CardTitle>
             <div className="flex gap-2">
               <Button
-                variant={userEventsFilter === "UPCOMING" ? "default" : "outline"}
+                variant={
+                  userEventsFilter === "UPCOMING" ? "default" : "outline"
+                }
                 size="sm"
                 onClick={() => setUserEventsFilter("UPCOMING")}
                 className="gap-1"
@@ -102,12 +137,16 @@ const EventFilters = (props: EventFiltersProps) => {
               {filteredEvents.length > 0 ? (
                 filteredEvents.map((item) => {
                   const event = item.event;
-                  const isFull = event.maxParticipants && event._count?.participants && 
-                                event._count.participants >= event.maxParticipants;
-                  
+                  const isFull =
+                    event.maxParticipants &&
+                    event._count?.participants &&
+                    event._count.participants >= event.maxParticipants;
+
                   return (
                     <TableRow key={event.id}>
-                      <TableCell className="font-medium">{event.title}</TableCell>
+                      <TableCell className="font-medium">
+                        {event.title}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
@@ -115,12 +154,12 @@ const EventFilters = (props: EventFiltersProps) => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {event.date.toLocaleDateString('en-US', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </TableCell>
+  {new Date(event.date).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  })}
+</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <Users className="w-3 h-3" />
@@ -131,12 +170,12 @@ const EventFilters = (props: EventFiltersProps) => {
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <DollarSign className="w-3 h-3" />
-                          {event.fee > 0 ? `$${event.fee}` : 'Free'}
+                          {event.fee > 0 ? `$${event.fee}` : "Free"}
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant={isFull ? "destructive" : "default"}>
-                          {isFull ? 'Full' : 'Joined'}
+                          {isFull ? "Full" : "Joined"}
                         </Badge>
                       </TableCell>
                     </TableRow>
@@ -144,7 +183,10 @@ const EventFilters = (props: EventFiltersProps) => {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={6}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     No {userEventsFilter.toLowerCase()} events found
                   </TableCell>
                 </TableRow>
@@ -157,24 +199,22 @@ const EventFilters = (props: EventFiltersProps) => {
   }
 
   // Handle BOOK_EVENTS mode
-  const { 
-    filters,
-    onFiltersChange,
-    onClear,
-    locations 
-  } = props;
+  const { filters, onFiltersChange, onClear, locations } = props;
 
   // Helper function to update specific filter
-  const updateFilter = <K extends keyof FilterType>(key: K, value: FilterType[K]) => {
+  const updateFilter = <K extends keyof FilterType>(
+    key: K,
+    value: FilterType[K],
+  ) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 
   // Check if any filter is active
-  const hasActiveFilters = 
-    filters.search !== '' || 
-    filters.eventType !== '' || 
-    filters.location !== '' || 
-    filters.date !== '' || 
+  const hasActiveFilters =
+    filters.search !== "" ||
+    filters.eventType !== "" ||
+    filters.location !== "" ||
+    filters.date !== "" ||
     filters.isPaid !== null;
 
   return (
@@ -206,7 +246,7 @@ const EventFilters = (props: EventFiltersProps) => {
             <Input
               placeholder="Search events by title or description..."
               value={filters.search}
-              onChange={(e) => updateFilter('search', e.target.value)}
+              onChange={(e) => updateFilter("search", e.target.value)}
               className="pl-10"
             />
           </div>
@@ -220,12 +260,13 @@ const EventFilters = (props: EventFiltersProps) => {
               <Label htmlFor="eventType" className="text-sm font-medium">
                 Event Type
               </Label>
-              <Select 
-                value={filters.eventType} 
+              <Select
+                value={filters.eventType}
                 onValueChange={(value) => {
                   // Use a placeholder value for "All Types" that's not an empty string
-                  const eventTypeValue = value === "ALL_TYPES" ? "" : value as EventType;
-                  updateFilter('eventType', eventTypeValue);
+                  const eventTypeValue =
+                    value === "ALL_TYPES" ? "" : (value as EventType);
+                  updateFilter("eventType", eventTypeValue);
                 }}
               >
                 <SelectTrigger id="eventType" className="w-full">
@@ -251,12 +292,12 @@ const EventFilters = (props: EventFiltersProps) => {
               <Label htmlFor="location" className="text-sm font-medium">
                 Location
               </Label>
-              <Select 
-                value={filters.location} 
+              <Select
+                value={filters.location}
                 onValueChange={(value) => {
                   // Use a placeholder value for "All Locations" that's not an empty string
                   const locationValue = value === "ALL_LOCATIONS" ? "" : value;
-                  updateFilter('location', locationValue);
+                  updateFilter("location", locationValue);
                 }}
               >
                 <SelectTrigger id="location" className="w-full">
@@ -276,7 +317,10 @@ const EventFilters = (props: EventFiltersProps) => {
 
             {/* Date */}
             <div className="space-y-2">
-              <Label htmlFor="date" className="text-sm font-medium flex items-center gap-2">
+              <Label
+                htmlFor="date"
+                className="text-sm font-medium flex items-center gap-2"
+              >
                 <Calendar className="h-4 w-4" />
                 Date
               </Label>
@@ -284,7 +328,7 @@ const EventFilters = (props: EventFiltersProps) => {
                 id="date"
                 type="date"
                 value={filters.date}
-                onChange={(e) => updateFilter('date', e.target.value)}
+                onChange={(e) => updateFilter("date", e.target.value)}
                 className="w-full"
               />
             </div>
@@ -292,12 +336,18 @@ const EventFilters = (props: EventFiltersProps) => {
             {/* Payment Type */}
             <div className="space-y-2">
               <Label className="text-sm font-medium block">Payment Type</Label>
-              <Tabs 
-                value={filters.isPaid === null ? "all" : filters.isPaid ? "paid" : "free"} 
+              <Tabs
+                value={
+                  filters.isPaid === null
+                    ? "all"
+                    : filters.isPaid
+                      ? "paid"
+                      : "free"
+                }
                 onValueChange={(value) => {
-                  if (value === "all") updateFilter('isPaid', null);
-                  else if (value === "paid") updateFilter('isPaid', true);
-                  else updateFilter('isPaid', false);
+                  if (value === "all") updateFilter("isPaid", null);
+                  else if (value === "paid") updateFilter("isPaid", true);
+                  else updateFilter("isPaid", false);
                 }}
                 className="w-full"
               >
@@ -313,7 +363,9 @@ const EventFilters = (props: EventFiltersProps) => {
           {/* Active Filters Badges */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 pt-4 border-t">
-              <span className="text-sm text-muted-foreground self-center">Active filters:</span>
+              <span className="text-sm text-muted-foreground self-center">
+                Active filters:
+              </span>
               {filters.search && (
                 <Badge variant="secondary" className="gap-1">
                   Search: {filters.search}
@@ -321,7 +373,7 @@ const EventFilters = (props: EventFiltersProps) => {
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                    onClick={() => updateFilter('search', '')}
+                    onClick={() => updateFilter("search", "")}
                   >
                     ×
                   </Button>
@@ -334,7 +386,7 @@ const EventFilters = (props: EventFiltersProps) => {
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                    onClick={() => updateFilter('eventType', '')}
+                    onClick={() => updateFilter("eventType", "")}
                   >
                     ×
                   </Button>
@@ -347,7 +399,7 @@ const EventFilters = (props: EventFiltersProps) => {
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                    onClick={() => updateFilter('location', '')}
+                    onClick={() => updateFilter("location", "")}
                   >
                     ×
                   </Button>
@@ -360,7 +412,7 @@ const EventFilters = (props: EventFiltersProps) => {
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                    onClick={() => updateFilter('date', '')}
+                    onClick={() => updateFilter("date", "")}
                   >
                     ×
                   </Button>
@@ -368,12 +420,12 @@ const EventFilters = (props: EventFiltersProps) => {
               )}
               {filters.isPaid !== null && (
                 <Badge variant="secondary" className="gap-1">
-                  {filters.isPaid ? 'Paid Only' : 'Free Only'}
+                  {filters.isPaid ? "Paid Only" : "Free Only"}
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                    onClick={() => updateFilter('isPaid', null)}
+                    onClick={() => updateFilter("isPaid", null)}
                   >
                     ×
                   </Button>
@@ -386,5 +438,5 @@ const EventFilters = (props: EventFiltersProps) => {
     </Card>
   );
 };
- 
+
 export default EventFilters;

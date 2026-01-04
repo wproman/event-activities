@@ -16,7 +16,7 @@ const HostsManagementHeader = () => {
       router.refresh();
     });
   };
-  
+
   return (
     <>
       <HostFormDialog

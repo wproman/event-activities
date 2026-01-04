@@ -76,7 +76,7 @@ const Modal: React.FC<ModalProps> = ({
             {title}
           </h2>
           <button
-          type="button"
+            type="button"
             onClick={onClose}
             className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             aria-label="Close modal"

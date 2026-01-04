@@ -14,7 +14,7 @@
 // export const getEvents = async (queryString: string = ''): Promise<EventsResponse> => {
 //   try {
 //     const res = await fetch(
-//       `${process.env.NEXT_PUBLIC_BASE_API_URL}/events}`, 
+//       `${process.env.NEXT_PUBLIC_BASE_API_URL}/events}`,
 //       {
 //         credentials: "include",
 //         cache: 'no-store'
@@ -33,9 +33,9 @@
 //         }
 //       };
 //     }
-    
+
 //     const data = await res.json();
-    
+
 //     // Ensure consistent response structure
 //     return {
 //       data: Array.isArray(data.data) ? data.data : [],
@@ -46,7 +46,7 @@
 //         totalPages: Math.ceil((data.data?.length || 0) / 10)
 //       }
 //     };
-    
+
 //   } catch {
 //     // Return empty structure on any error
 //     return {

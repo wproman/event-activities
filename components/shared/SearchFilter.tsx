@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { Input } from "../ui/input";
 
-
 interface SearchFilterProps {
   placeholder?: string;
   paramName?: string;

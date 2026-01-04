@@ -24,7 +24,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   user,
   onSave,
   isLoading,
-  setIsLoading
+  setIsLoading,
 }) => {
   const [formData, setFormData] = useState({
     name: user.name,
@@ -36,14 +36,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-//   const handleInterestToggle = (interest: Interest) => {
-//     setFormData((prev) => ({
-//       ...prev,
-//       interests: prev.interests.includes(interest)
-//         ? prev.interests.filter((i) => i !== interest)
-//         : [...prev.interests, interest],
-//     }));
-//   };
+  //   const handleInterestToggle = (interest: Interest) => {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       interests: prev.interests.includes(interest)
+  //         ? prev.interests.filter((i) => i !== interest)
+  //         : [...prev.interests, interest],
+  //     }));
+  //   };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -76,9 +76,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             placeholder="Enter your name"
             className={errors.name ? "border-red-500" : ""}
           />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name}</p>
-          )}
+          {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
         </div>
 
         {/* Profile Image Input */}
@@ -147,10 +145,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            disabled={isLoading}
-          >
+          <Button type="submit" disabled={isLoading}>
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </div>

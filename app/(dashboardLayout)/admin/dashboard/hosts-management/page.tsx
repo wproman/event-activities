@@ -17,37 +17,36 @@ const AdminHostsManagementPage = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  
+
   // Fetch data on the server
   const hostsResult = await getHosts(queryString);
-  
+
   // Calculate pagination safely
   const totalPages = Math.ceil(
-    (hostsResult?.meta?.total || 0) / (hostsResult?.meta?.limit || 10)
+    (hostsResult?.meta?.total || 0) / (hostsResult?.meta?.limit || 10),
   );
 
   return (
     <div className="space-y-6">
       <HostsManagementHeader />
-      
+
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-600">
-          {hostsResult?.meta?.total 
-            ? `Showing ${hostsResult.meta.total} hosts` 
-            : 'No hosts found'
-          }
+          {hostsResult?.meta?.total
+            ? `Showing ${hostsResult.meta.total} hosts`
+            : "No hosts found"}
         </div>
         <div className="flex space-x-2">
           <SearchFilter paramName="searchTerm" placeholder="Search hosts..." />
           <RefreshButton />
         </div>
       </div>
-      
+
       {/* Pass the fetched hosts data to the client component */}
       <Suspense fallback={<TableSkeleton columns={5} rows={10} />}>
         <HostsTable hosts={hostsResult?.data || []} />
       </Suspense>
-      
+
       {/* Add pagination if needed */}
       {totalPages > 1 && (
         <TablePagination
@@ -62,5 +61,5 @@ const AdminHostsManagementPage = async ({
 export default AdminHostsManagementPage;
 
 // Optional: Add these to prevent caching if needed
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;

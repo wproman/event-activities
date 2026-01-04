@@ -24,44 +24,40 @@ const AdminEventsManagementPage = async ({
 }) => {
   const searchParamsObj = await searchParams;
   const queryString = queryStringFormatter(searchParamsObj);
-  
+
   // Fetch events data
   const eventsData = await allEvents();
-  
+
   // Convert to expected structure
   const eventsList = Array.isArray(eventsData) ? eventsData : [];
-  
+
   // Calculate pagination (adjust based on your API)
   const totalPages = Math.ceil(eventsList.length / 10);
 
   return (
     <div className="space-y-6">
       <EventsManagementHeader />
-      
+
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-600">
-          {eventsList.length > 0 
-            ? `Showing ${eventsList.length} events` 
-            : 'No events found'
-          }
+          {eventsList.length > 0
+            ? `Showing ${eventsList.length} events`
+            : "No events found"}
         </div>
         <div className="flex space-x-2">
           <SearchFilter paramName="searchTerm" placeholder="Search events..." />
           <RefreshButton />
         </div>
       </div>
-      
+
       {/* Pass events data to client component */}
       <Suspense fallback={<TableSkeleton columns={7} rows={10} />}>
         <EventsTable events={eventsList} />
       </Suspense>
-      
+
       {/* Add pagination if needed */}
       {totalPages > 1 && (
-        <TablePagination
-          currentPage={1}
-          totalPages={totalPages}
-        />
+        <TablePagination currentPage={1} totalPages={totalPages} />
       )}
     </div>
   );
@@ -69,5 +65,5 @@ const AdminEventsManagementPage = async ({
 
 export default AdminEventsManagementPage;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -10,21 +10,17 @@ import { Button } from "./ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 
-
-
-const LoginForm = ({redirect }: { redirect?: string }) => {
+const LoginForm = ({ redirect }: { redirect?: string }) => {
   const [state, formAction, isPending] = useActionState(loginUser, null);
 
-
-
-   useEffect(() => {
+  useEffect(() => {
     if (state && !state.success && state.message) {
       toast.error(state.message);
     }
   }, [state]);
   return (
     <form action={formAction}>
-       {redirect && <input type="hidden" name="redirect" value={redirect} />}
+      {redirect && <input type="hidden" name="redirect" value={redirect} />}
       <FieldGroup>
         <div className="grid grid-cols-1 gap-4">
           {/* Email */}
@@ -38,7 +34,7 @@ const LoginForm = ({redirect }: { redirect?: string }) => {
               //   required
             />
 
-           <InputFieldError field="email" state = {state}/>
+            <InputFieldError field="email" state={state} />
           </Field>
 
           {/* Password */}
@@ -51,7 +47,7 @@ const LoginForm = ({redirect }: { redirect?: string }) => {
               placeholder="Enter your password"
               //   required
             />
-              <InputFieldError field="password" state = {state}/>
+            <InputFieldError field="password" state={state} />
           </Field>
         </div>
         <FieldGroup className="mt-4">

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { IUser } from "@/app/types/host.interface";
 import InputFieldError from "@/components/shared/InputFieldError";
@@ -15,7 +15,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { createHost, updateHost } from "@/services/admin/hostManagement";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
-
 
 interface IHostFormDialogProps {
   open: boolean;
@@ -34,7 +33,7 @@ const HostFormDialog = ({
 
   const [state, formAction, pending] = useActionState(
     isEdit ? updateHost.bind(null, host.id!) : createHost,
-    null
+    null,
   );
 
   useEffect(() => {
@@ -103,8 +102,6 @@ const HostFormDialog = ({
                   />
                   <InputFieldError state={state} field="password" />
                 </Field>
-
-               
               </>
             )}
 
@@ -120,15 +117,17 @@ const HostFormDialog = ({
               <InputFieldError state={state} field="bio" />
             </Field>
 
-            
-
             <Field>
-              <FieldLabel htmlFor="interests">Interests (comma separated)</FieldLabel>
+              <FieldLabel htmlFor="interests">
+                Interests (comma separated)
+              </FieldLabel>
               <Input
                 id="interests"
                 name="interests"
                 placeholder="coding, hiking, reading"
-                defaultValue={isEdit ? host?.interests?.join(", ") || "" : undefined}
+                defaultValue={
+                  isEdit ? host?.interests?.join(", ") || "" : undefined
+                }
               />
               <InputFieldError state={state} field="interests" />
             </Field>
@@ -215,11 +214,7 @@ const HostFormDialog = ({
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending
-                ? "Saving..."
-                : isEdit
-                ? "Update Host"
-                : "Create Host"}
+              {pending ? "Saving..." : isEdit ? "Update Host" : "Create Host"}
             </Button>
           </div>
         </form>

@@ -1,7 +1,12 @@
 // components/Navbar.tsx
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
@@ -16,9 +21,7 @@ type NavItem = {
 
 const PublicNavbar = async () => {
   const accessToken = await getCookie("accessToken");
-  const userRole = accessToken
-    ? await getCookie("userRole") || "USER"
-    : null;
+  const userRole = accessToken ? (await getCookie("userRole")) || "USER" : null;
 
   // Common nav items
   const commonItems: NavItem[] = [
@@ -145,14 +148,18 @@ const PublicNavbar = async () => {
                   {accessToken ? (
                     <>
                       <Link href="/profile/me" className="block">
-                        <Button variant="outline" className="w-full">Profile</Button>
+                        <Button variant="outline" className="w-full">
+                          Profile
+                        </Button>
                       </Link>
                       <LogoutButton />
                     </>
                   ) : (
                     <>
                       <Link href="/login">
-                        <Button variant="outline" className="w-full">Login</Button>
+                        <Button variant="outline" className="w-full">
+                          Login
+                        </Button>
                       </Link>
                       <Link href="/register">
                         <Button className="w-full">Sign Up</Button>

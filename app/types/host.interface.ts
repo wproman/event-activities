@@ -14,7 +14,7 @@ export interface IUser {
   ratingAvg?: number;
   ratingCount?: number;
   needPasswordChange?: boolean;
-  status?: 'ACTIVE' | 'INACTIVE';
+  status?: "ACTIVE" | "INACTIVE";
   isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

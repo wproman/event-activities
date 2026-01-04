@@ -1,18 +1,17 @@
-
-import { User } from '@/app/types';
+import { User } from "@/app/types";
 import getAllUser from "@/services/admin/getAllUser";
 import Image from "next/image";
 
-const Allhost= async () => {
+const Allhost = async () => {
   const users = await getAllUser();
-  
+
   // Add defensive check to ensure users is an array
   const usersList = Array.isArray(users) ? users : [];
 
   return (
     <div className="flex flex-col items-center my-10 px-4">
       <h1 className="text-2xl font-bold mb-6">Community Members</h1>
-      
+
       {usersList.length === 0 ? (
         <p className="text-gray-500">No community members found.</p>
       ) : (
@@ -53,7 +52,9 @@ const Allhost= async () => {
                   <td className="border px-4 py-2">{user.city || "-"}</td>
                   <td className="border px-4 py-2">{user.bio || "-"}</td>
                   <td className="border px-4 py-2">
-                    {user?.interests?.length > 0 ? user.interests.join(", ") : "-"}
+                    {user?.interests?.length > 0
+                      ? user.interests.join(", ")
+                      : "-"}
                   </td>
                 </tr>
               ))}
