@@ -19,7 +19,9 @@ interface UserDropdownProps {
   userInfo: UserInfo;
 }
 
+
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
+console.log("userInfo in dropdown", userInfo);
   const handleLogout = async () => {
     await logoutUser();
   };
@@ -28,7 +30,11 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
           <span className="text-sm font-semibold">
-            {userInfo.name.charAt(0).toUpperCase()}
+ {userInfo?.name?.trim()?.[0]?.toUpperCase() ?? "U"}
+
+
+
+
           </span>
         </Button>
       </DropdownMenuTrigger>

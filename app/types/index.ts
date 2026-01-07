@@ -194,3 +194,17 @@ export interface EventFilters {
   date: string;
   isPaid: boolean | null;
 }
+export interface Meta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+export interface EventResponse {
+  success: boolean;
+  message: string;
+  data: {
+    events: Event[];
+    meta: Meta;
+  };
+}

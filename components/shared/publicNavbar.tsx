@@ -26,12 +26,12 @@ const PublicNavbar = async () => {
   // Common nav items
   const commonItems: NavItem[] = [
     { href: "/explore", label: "Explore Events" },
-    { href: "/events", label: "Become a Host" },
+    { href: "/hosts/create-host", label: "Become a Host" },
   ];
 
   // Role-specific items
   const userItems: NavItem[] = [
-    { href: "/my-events", label: "My Events" },
+    { href: "/dashboard/my-event", label: "My Events" },
     { href: "/dashboard", label: "Dashboard" },
   ];
 
@@ -87,7 +87,7 @@ const PublicNavbar = async () => {
         <div className="hidden md:flex items-center space-x-3">
           {accessToken ? (
             <>
-              <Link href="/profile/me">
+              <Link href="/my-profile">
                 <Button variant="ghost">Profile</Button>
               </Link>
               <LogoutButton />
@@ -113,7 +113,7 @@ const PublicNavbar = async () => {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-75 sm:w-100">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col space-y-6 mt-8">
                 {/* Common Links */}

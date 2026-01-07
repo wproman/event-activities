@@ -17,6 +17,8 @@ const userInfo = async () => {
     }
 
     const result = await response.json();
+
+    console.log("first", result)
     return {
       success: true,
       data: result.data || result,

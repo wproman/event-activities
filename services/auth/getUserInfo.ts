@@ -22,13 +22,14 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
       return null;
     }
 
-    const userInfo: UserInfo = {
-      name: verifiedToken.name || "Unknown User",
-      email: verifiedToken.email,
-      role: verifiedToken.role,
-    };
-
+  const userInfo: UserInfo = {
+  name: verifiedToken.name ?? "", // ✅ prevent undefined
+  email: verifiedToken.email,
+  role: verifiedToken.role,
+};
+console.log("userinfo",userInfo)
     return userInfo;
+    
   } catch (error: any) {
     console.log(error);
     return null;

@@ -60,7 +60,7 @@ export const registerUser = async (
       newFormData.append("file", formData.get("file") as Blob);
     }
     // API call
-    const res = await serverFetch.post("/auth/register", {
+    const res = await serverFetch.post("/users/register", {
       body: newFormData,
     });
 

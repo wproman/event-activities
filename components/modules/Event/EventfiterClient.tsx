@@ -1,7 +1,8 @@
 // components/modules/event/EventFilterClient.tsx
+/** biome-ignore-all assist/source/organizeImports: <explanation*/
 "use client";
 
-import { Event } from "@/app/types";
+import type { Event } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

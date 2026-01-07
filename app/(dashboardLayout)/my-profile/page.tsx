@@ -195,7 +195,7 @@ const ProfilePage: React.FC = async () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Profile Header */}
         <Card className="border-border mb-8 overflow-hidden">
-          <div className="h-32 md:h-48 bg-gradient-to-r from-primary/20 via-primary/10 to-accent/20" />
+          <div className="h-32 md:h-48 bg-linear-to-r from-primary/20 via-primary/10 to-accent/20" />
           <CardContent className="px-6 pb-6">
             <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-12 md:-mt-16">
               <div className="relative">

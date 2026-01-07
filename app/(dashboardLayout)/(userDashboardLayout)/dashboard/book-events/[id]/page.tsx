@@ -104,7 +104,7 @@ const handleJoinEvent = async () => {
       if (result.success) {
         setSuccess(true);
         setTimeout(() => {
-          router.push("/dashboard/my-events");
+          router.push("/dashboard/my-event");
         }, 2000);
       } else {
         setError(result.message || "Failed to join event");
@@ -246,7 +246,7 @@ const handleJoinEvent = async () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Link
-            href={`/events/${eventId}`}
+            href={`/dashboard/book-events/`}
             className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
           >
             <svg

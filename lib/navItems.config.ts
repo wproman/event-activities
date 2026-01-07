@@ -93,7 +93,7 @@ export const userNavItems: NavSection[] = [
     items: [
       {
         title: "My Events",
-        href: "/dashboard/my-events",
+        href: "/dashboard/my-event",
         icon: "FileText", // ✅ String
         roles: ["USER"],
       },

@@ -15,7 +15,7 @@ export const commonProtectedRoutes: RouteConfig = {
 };
 
 export const hostProtectedRoutes: RouteConfig = {
-  patterns: [/^\/host/], // Routes starting with /doctor/* , /assitants, /appointments/*
+   patterns: [/^\/host\/(?!create-host)/], // Routes starting with /doctor/* , /assitants, /appointments/*
   exact: [], // "/assistants"
 };
 
