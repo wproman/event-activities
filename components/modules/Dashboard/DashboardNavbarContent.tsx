@@ -1,6 +1,5 @@
 "use client";
 
-
 import { NavSection } from "@/app/types/dashboard.interface";
 import { UserInfo } from "@/app/types/user.interface";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { Bell, Menu, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardMobileSidebar from "./DashboardMobileSidebar";
 import UserDropdown from "./UserDropdown";
-
 
 interface DashboardNavbarContentProps {
   userInfo: UserInfo;

@@ -4,20 +4,26 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import {
-    ArrowLeft,
-    Calendar,
-    Clock,
-    DollarSign,
-    Edit,
-    Image as ImageIcon,
-    MapPin,
-    Tag,
-    Trash2,
-    Users
+  ArrowLeft,
+  Calendar,
+  Clock,
+  DollarSign,
+  Edit,
+  Image as ImageIcon,
+  MapPin,
+  Tag,
+  Trash2,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,10 +64,10 @@ const EventDetailPage = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BASE_API_URL || 'http://localhost:5000/api/v1'}/events/${eventId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api/v1"}/events/${eventId}`,
           {
-            credentials: 'include',
-          }
+            credentials: "include",
+          },
         );
 
         if (!response.ok) {
@@ -89,18 +95,22 @@ const EventDetailPage = () => {
   }, [eventId, router]);
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete this event? This action cannot be undone.",
+      )
+    ) {
       return;
     }
 
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BASE_API_URL || 'http://localhost:5000/api/v1'}/events/${eventId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api/v1"}/events/${eventId}`,
         {
           method: "DELETE",
-          credentials: 'include',
-        }
+          credentials: "include",
+        },
       );
 
       if (!response.ok) {
@@ -135,7 +145,10 @@ const EventDetailPage = () => {
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle>Event Not Found</CardTitle>
-            <CardDescription>The event you're looking for doesn't exist or you don't have permission to view it.</CardDescription>
+            <CardDescription>
+              The event you're looking for doesn't exist or you don't have
+              permission to view it.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
@@ -167,19 +180,15 @@ const EventDetailPage = () => {
                 Back to Events
               </Link>
             </Button>
-            
+
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-              >
+              <Button variant="outline" size="sm" asChild>
                 <Link href={`/host/events/${eventId}/edit`}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Event
                 </Link>
               </Button>
-              
+
               <Button
                 variant="destructive"
                 size="sm"
@@ -200,15 +209,22 @@ const EventDetailPage = () => {
               </Button>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
-              <Badge variant={event.status === "OPEN" ? "default" : "secondary"}>
+              <h1 className="text-3xl font-bold tracking-tight">
+                {event.title}
+              </h1>
+              <Badge
+                variant={event.status === "OPEN" ? "default" : "secondary"}
+              >
                 {event.status}
               </Badge>
               {event.isPaidEvent && (
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Badge
+                  variant="outline"
+                  className="bg-green-50 text-green-700 border-green-200"
+                >
                   <DollarSign className="h-3 w-3 mr-1" />
                   Paid
                 </Badge>
@@ -278,7 +294,9 @@ const EventDetailPage = () => {
                     </div>
                     <div>
                       <p className="font-medium">{formattedDate}</p>
-                      <p className="text-sm text-muted-foreground">{formattedTime}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formattedTime}
+                      </p>
                     </div>
                   </div>
 
@@ -304,7 +322,9 @@ const EventDetailPage = () => {
                       Price
                     </div>
                     <p className="font-medium">
-                      {event.isPaidEvent ? `$${parseFloat(event.fee).toFixed(2)}` : "Free"}
+                      {event.isPaidEvent
+                        ? `$${parseFloat(event.fee).toFixed(2)}`
+                        : "Free"}
                     </p>
                   </div>
                 </div>
@@ -324,7 +344,9 @@ const EventDetailPage = () => {
                       <Users className="h-4 w-4 text-muted-foreground" />
                       Max Participants
                     </div>
-                    <p className="font-medium">{event.maxParticipants} people</p>
+                    <p className="font-medium">
+                      {event.maxParticipants} people
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -351,9 +373,9 @@ const EventDetailPage = () => {
                     <p className="text-xs text-muted-foreground">Capacity</p>
                   </div>
                 </div>
-                
+
                 <Separator />
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Event ID:</span>
@@ -378,18 +400,22 @@ const EventDetailPage = () => {
                 <CardDescription>Additional management options</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  asChild
+                >
                   <Link href={`/host/events/${eventId}/attendees`}>
                     <Users className="h-4 w-4 mr-2" />
                     View Attendees
                   </Link>
                 </Button>
-                
+
                 <Button variant="outline" className="w-full justify-start">
                   <Clock className="h-4 w-4 mr-2" />
                   Check-in Settings
                 </Button>
-                
+
                 <Button variant="outline" className="w-full justify-start">
                   <DollarSign className="h-4 w-4 mr-2" />
                   Payment Reports
@@ -407,20 +433,24 @@ const EventDetailPage = () => {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/30">
                     <code className="text-xs flex-1 truncate">
-                      {typeof window !== 'undefined' ? `${window.location.origin}/events/${eventId}` : ''}
+                      {typeof window !== "undefined"
+                        ? `${window.location.origin}/events/${eventId}`
+                        : ""}
                     </code>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.origin}/events/${eventId}`);
+                        navigator.clipboard.writeText(
+                          `${window.location.origin}/events/${eventId}`,
+                        );
                         toast.success("Link copied to clipboard");
                       }}
                     >
                       Copy
                     </Button>
                   </div>
-                  
+
                   <p className="text-xs text-muted-foreground text-center">
                     Share this link to invite people to your event
                   </p>

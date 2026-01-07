@@ -5,32 +5,32 @@
 import { EVENT_TYPE_LABELS, EventType } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    AlertCircle,
-    ArrowLeft,
-    Calendar,
-    CheckCircle,
-    DollarSign,
-    Image as ImageIcon,
-    MapPin,
-    Tag,
-    Users
+  AlertCircle,
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  DollarSign,
+  Image as ImageIcon,
+  MapPin,
+  Tag,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,7 +59,7 @@ const EditEventPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventId, setEventId] = useState<string>("");
-  
+
   // Initial form state
   const [formData, setFormData] = useState<EventFormData>({
     title: "",
@@ -72,41 +72,49 @@ const EditEventPage = () => {
     isPaidEvent: false,
     eventType: "OTHER",
     maxParticipants: "",
-    status: "OPEN"
+    status: "OPEN",
   });
 
   // Form errors
-  const [errors, setErrors] = useState<Partial<Record<keyof EventFormData, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof EventFormData, string>>
+  >({});
 
   // All event types
   const allEventTypes: EventType[] = [
-    'CONCERT', 'HIKE', 'DINNER', 'GAME_NIGHT', 
-    'MEETUP', 'SPORT', 'ART', 'OTHER'
+    "CONCERT",
+    "HIKE",
+    "DINNER",
+    "GAME_NIGHT",
+    "MEETUP",
+    "SPORT",
+    "ART",
+    "OTHER",
   ];
 
   // Status options
   const statusOptions = [
-    { value: 'OPEN', label: 'Open' },
-    { value: 'CLOSED', label: 'Closed' },
-    { value: 'CANCELLED', label: 'Cancelled' },
-    { value: 'COMPLETED', label: 'Completed' }
+    { value: "OPEN", label: "Open" },
+    { value: "CLOSED", label: "Closed" },
+    { value: "CANCELLED", label: "Cancelled" },
+    { value: "COMPLETED", label: "Completed" },
   ];
 
   useEffect(() => {
     const fetchEventData = async () => {
       if (!params.id) return;
-      
+
       const id = params.id as string;
       setEventId(id);
-      
+
       try {
         setIsLoading(true);
-        
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${id}`,
           {
-            credentials: 'include',
-          }
+            credentials: "include",
+          },
         );
 
         if (!response.ok) {
@@ -114,14 +122,14 @@ const EditEventPage = () => {
         }
 
         const result = await response.json();
-        
+
         if (result.success && result.data) {
           const event = result.data;
-          
+
           // Format date for input field (YYYY-MM-DD)
           const dateObj = new Date(event.date);
-          const formattedDate = dateObj.toISOString().split('T')[0];
-          
+          const formattedDate = dateObj.toISOString().split("T")[0];
+
           // Set form data
           setFormData({
             title: event.title || "",
@@ -134,7 +142,7 @@ const EditEventPage = () => {
             isPaidEvent: event.isPaidEvent || false,
             eventType: event.eventType || "OTHER",
             maxParticipants: event.maxParticipants?.toString() || "",
-            status: event.status || "OPEN"
+            status: event.status || "OPEN",
           });
         } else {
           throw new Error("Event not found");
@@ -153,20 +161,20 @@ const EditEventPage = () => {
 
   // Handle input changes
   const handleInputChange = (field: keyof EventFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
   // Toggle paid event
   const togglePaidEvent = () => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData((prev) => ({
+      ...prev,
       isPaidEvent: !prev.isPaidEvent,
-      fee: !prev.isPaidEvent ? "0" : prev.fee
+      fee: !prev.isPaidEvent ? "0" : prev.fee,
     }));
   };
 
@@ -175,17 +183,24 @@ const EditEventPage = () => {
     const newErrors: Partial<Record<keyof EventFormData, string>> = {};
 
     if (!formData.title.trim()) newErrors.title = "Title is required";
-    if (formData.title.length < 3) newErrors.title = "Title must be at least 3 characters";
-    
-    if (!formData.description.trim()) newErrors.description = "Description is required";
-    if (formData.description.length < 10) newErrors.description = "Description must be at least 10 characters";
-    
+    if (formData.title.length < 3)
+      newErrors.title = "Title must be at least 3 characters";
+
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (formData.description.length < 10)
+      newErrors.description = "Description must be at least 10 characters";
+
     if (!formData.date) newErrors.date = "Date is required";
-    if (new Date(formData.date) < new Date()) newErrors.date = "Date must be in the future";
-    
+    if (new Date(formData.date) < new Date())
+      newErrors.date = "Date must be in the future";
+
     if (!formData.location.trim()) newErrors.location = "Location is required";
-    
-    if (formData.isPaidEvent && (!formData.fee || parseFloat(formData.fee) <= 0)) {
+
+    if (
+      formData.isPaidEvent &&
+      (!formData.fee || parseFloat(formData.fee) <= 0)
+    ) {
       newErrors.fee = "Fee must be greater than 0 for paid events";
     }
 
@@ -196,7 +211,7 @@ const EditEventPage = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error("Please fix the errors in the form");
       return;
@@ -234,9 +249,9 @@ const EditEventPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       console.log("API Response status:", response.status);
@@ -244,30 +259,29 @@ const EditEventPage = () => {
       if (!response.ok) {
         const responseText = await response.text();
         console.error("API Error response:", responseText);
-        
+
         let errorMessage = `Failed to update event (Status: ${response.status})`;
-        
+
         try {
           const errorData = JSON.parse(responseText);
           errorMessage = errorData.message || errorData.error || errorMessage;
         } catch {
           errorMessage = responseText || errorMessage;
         }
-        
+
         throw new Error(errorMessage);
       }
 
       const result = await response.json();
       console.log("API Success response:", result);
-      
+
       toast.success(result.message || "Event updated successfully!");
-      
+
       // Redirect to the event detail page
       setTimeout(() => {
         router.push(`/host/dashboard/my-events/${eventId}`);
         router.refresh();
       }, 1500);
-
     } catch (error: any) {
       console.error("Error updating event:", error);
       toast.error(error.message || "Failed to update event. Please try again.");
@@ -280,7 +294,7 @@ const EditEventPage = () => {
   const getTomorrow = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    return tomorrow.toISOString().split("T")[0];
   };
 
   if (isLoading) {
@@ -307,7 +321,7 @@ const EditEventPage = () => {
               </Link>
             </Button>
           </div>
-          
+
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold tracking-tight">Edit Event</h1>
@@ -329,9 +343,18 @@ const EditEventPage = () => {
               <div className="space-y-1">
                 <p className="font-medium text-yellow-800">Important Notes</p>
                 <ul className="text-sm text-yellow-700 space-y-1">
-                  <li>• Some changes may be restricted if participants have already joined</li>
-                  <li>• Changing event date or location may affect existing participants</li>
-                  <li>• Changing from free to paid will affect existing participants</li>
+                  <li>
+                    • Some changes may be restricted if participants have
+                    already joined
+                  </li>
+                  <li>
+                    • Changing event date or location may affect existing
+                    participants
+                  </li>
+                  <li>
+                    • Changing from free to paid will affect existing
+                    participants
+                  </li>
                 </ul>
               </div>
             </div>
@@ -361,7 +384,9 @@ const EditEventPage = () => {
                     <Input
                       id="title"
                       value={formData.title}
-                      onChange={(e) => handleInputChange("title", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("title", e.target.value)
+                      }
                       placeholder="Enter event title"
                       className={errors.title ? "border-red-500" : ""}
                     />
@@ -376,13 +401,17 @@ const EditEventPage = () => {
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={(e) => handleInputChange("description", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("description", e.target.value)
+                      }
                       placeholder="Describe your event in detail..."
                       rows={4}
                       className={errors.description ? "border-red-500" : ""}
                     />
                     {errors.description && (
-                      <p className="text-sm text-red-500">{errors.description}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.description}
+                      </p>
                     )}
                     <p className="text-xs text-muted-foreground">
                       {formData.description.length}/500 characters
@@ -397,7 +426,9 @@ const EditEventPage = () => {
                       <Input
                         id="location"
                         value={formData.location}
-                        onChange={(e) => handleInputChange("location", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("location", e.target.value)
+                        }
                         placeholder="Where will the event take place?"
                         className="pl-10"
                       />
@@ -413,7 +444,9 @@ const EditEventPage = () => {
                     <Input
                       id="category"
                       value={formData.category}
-                      onChange={(e) => handleInputChange("category", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("category", e.target.value)
+                      }
                       placeholder="e.g., Music, Sports, Technology"
                     />
                   </div>
@@ -437,7 +470,9 @@ const EditEventPage = () => {
                         id="date"
                         type="date"
                         value={formData.date}
-                        onChange={(e) => handleInputChange("date", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("date", e.target.value)
+                        }
                         min={getTomorrow()}
                         className="pl-10"
                       />
@@ -463,7 +498,7 @@ const EditEventPage = () => {
                     <Label>Event Status</Label>
                     <Select
                       value={formData.status}
-                      onValueChange={(value: string) => 
+                      onValueChange={(value: string) =>
                         handleInputChange("status", value)
                       }
                     >
@@ -485,7 +520,7 @@ const EditEventPage = () => {
                     <Label>Event Type</Label>
                     <Select
                       value={formData.eventType}
-                      onValueChange={(value: EventType) => 
+                      onValueChange={(value: EventType) =>
                         handleInputChange("eventType", value)
                       }
                     >
@@ -504,7 +539,9 @@ const EditEventPage = () => {
 
                   {/* Max Participants */}
                   <div className="space-y-2">
-                    <Label htmlFor="maxParticipants">Max Participants (Optional)</Label>
+                    <Label htmlFor="maxParticipants">
+                      Max Participants (Optional)
+                    </Label>
                     <div className="relative">
                       <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -512,7 +549,9 @@ const EditEventPage = () => {
                         type="number"
                         min="1"
                         value={formData.maxParticipants}
-                        onChange={(e) => handleInputChange("maxParticipants", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("maxParticipants", e.target.value)
+                        }
                         placeholder="Leave empty for unlimited"
                         className="pl-10"
                       />
@@ -546,7 +585,9 @@ const EditEventPage = () => {
                               min="0"
                               step="0.01"
                               value={formData.fee}
-                              onChange={(e) => handleInputChange("fee", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("fee", e.target.value)
+                              }
                               placeholder="0.00"
                               className="pl-10"
                             />
@@ -568,9 +609,7 @@ const EditEventPage = () => {
                     <ImageIcon className="h-5 w-5" />
                     Event Image
                   </CardTitle>
-                  <CardDescription>
-                    Update the event image
-                  </CardDescription>
+                  <CardDescription>Update the event image</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
@@ -578,7 +617,9 @@ const EditEventPage = () => {
                     <Input
                       id="imageUrl"
                       value={formData.imageUrl}
-                      onChange={(e) => handleInputChange("imageUrl", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("imageUrl", e.target.value)
+                      }
                       placeholder="https://example.com/image.jpg"
                     />
                     <p className="text-xs text-muted-foreground">
@@ -598,7 +639,7 @@ const EditEventPage = () => {
                           height={160}
                           className="w-full h-40 object-cover"
                           onError={(e) => {
-                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.style.display = "none";
                           }}
                         />
                       </div>
@@ -652,7 +693,9 @@ const EditEventPage = () => {
                     </div>
 
                     <div className="text-xs text-muted-foreground text-center">
-                      <p>All changes will be immediately visible to participants.</p>
+                      <p>
+                        All changes will be immediately visible to participants.
+                      </p>
                     </div>
                   </div>
                 </CardContent>

@@ -1,17 +1,15 @@
-
 import { User } from "@/app/types";
 import HandleBlockUser from "@/components/modules/Admin/UserManagement/HandleBlockUser";
 import getAllUser from "@/services/admin/getAllUser";
 
-
 const UsersTable = async () => {
-      console.log('=== UsersTable rendering ===');
+  console.log("=== UsersTable rendering ===");
   const users = await getAllUser();
-   console.log('Users received:', users);
-  console.log('Number of users:', users.length);
-  
+  console.log("Users received:", users);
+  console.log("Number of users:", users.length);
+
   const usersList = Array.isArray(users) ? users : [];
-  console.log('UsersList length:', usersList.length);
+  console.log("UsersList length:", usersList.length);
 
   return (
     <div className="overflow-x-auto mt-10">
@@ -35,7 +33,7 @@ const UsersTable = async () => {
                 <td>{index + 1}</td>
                 <td>{user.name || "N/A"}</td>
                 <td>{user.email}</td>
-                <td>{user.status === "BLOCKED"   ? "Yes" : "No"}</td>
+                <td>{user.status === "BLOCKED" ? "Yes" : "No"}</td>
                 <td>
                   <HandleBlockUser user={user} />
                 </td>

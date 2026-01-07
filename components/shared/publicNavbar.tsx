@@ -1,7 +1,12 @@
 // components/Navbar.tsx
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 
@@ -16,19 +21,17 @@ type NavItem = {
 
 const PublicNavbar = async () => {
   const accessToken = await getCookie("accessToken");
-  const userRole = accessToken
-    ? await getCookie("userRole") || "USER"
-    : null;
+  const userRole = accessToken ? (await getCookie("userRole")) || "USER" : null;
 
   // Common nav items
   const commonItems: NavItem[] = [
     { href: "/explore", label: "Explore Events" },
-    { href: "/events", label: "Become a Host" },
+    { href: "/hosts/create-host", label: "Become a Host" },
   ];
 
   // Role-specific items
   const userItems: NavItem[] = [
-    { href: "/my-events", label: "My Events" },
+    { href: "/dashboard/my-event", label: "My Events" },
     { href: "/dashboard", label: "Dashboard" },
   ];
 
@@ -84,7 +87,7 @@ const PublicNavbar = async () => {
         <div className="hidden md:flex items-center space-x-3">
           {accessToken ? (
             <>
-              <Link href="/profile/me">
+              <Link href="/my-profile">
                 <Button variant="ghost">Profile</Button>
               </Link>
               <LogoutButton />
@@ -110,7 +113,7 @@ const PublicNavbar = async () => {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-75 sm:w-100">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col space-y-6 mt-8">
                 {/* Common Links */}
@@ -145,14 +148,18 @@ const PublicNavbar = async () => {
                   {accessToken ? (
                     <>
                       <Link href="/profile/me" className="block">
-                        <Button variant="outline" className="w-full">Profile</Button>
+                        <Button variant="outline" className="w-full">
+                          Profile
+                        </Button>
                       </Link>
                       <LogoutButton />
                     </>
                   ) : (
                     <>
                       <Link href="/login">
-                        <Button variant="outline" className="w-full">Login</Button>
+                        <Button variant="outline" className="w-full">
+                          Login
+                        </Button>
                       </Link>
                       <Link href="/register">
                         <Button className="w-full">Sign Up</Button>

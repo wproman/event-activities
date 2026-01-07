@@ -2,7 +2,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import deleteEvent from "@/services/event/deleteEvents";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -10,12 +17,11 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-
 const DeleteEventPage = () => {
   const params = useParams();
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   const eventId = params.id as string;
 
   const handleDelete = async () => {
@@ -24,10 +30,10 @@ const DeleteEventPage = () => {
     }
 
     setIsDeleting(true);
-    
+
     try {
       const result = await deleteEvent(eventId);
-      
+
       if (result.success) {
         toast.success("Event deleted successfully");
         router.push("/host/dashboard/my-events");

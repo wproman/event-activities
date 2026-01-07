@@ -88,19 +88,18 @@ const EventsTable = ({ events }: EventsTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Client-side filtering
-  const filteredEvents = events.filter(event => 
-    searchTerm === "" || 
-    event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.host?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredEvents = events.filter(
+    (event) =>
+      searchTerm === "" ||
+      event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.host?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (!events || events.length === 0) {
     return (
       <div className="overflow-x-auto mt-8">
-        <div className="text-center py-8 text-gray-500">
-          No events found.
-        </div>
+        <div className="text-center py-8 text-gray-500">No events found.</div>
       </div>
     );
   }
@@ -140,12 +139,19 @@ const EventsTable = ({ events }: EventsTableProps) => {
 
               <tbody>
                 {filteredEvents.map((event: Event, index: number) => (
-                  <tr key={event.id} className="border-b text-center hover:bg-gray-50">
+                  <tr
+                    key={event.id}
+                    className="border-b text-center hover:bg-gray-50"
+                  >
                     <td className="py-3">{index + 1}</td>
-                    <td className="py-3 font-medium">{event.title || "No title"}</td>
+                    <td className="py-3 font-medium">
+                      {event.title || "No title"}
+                    </td>
                     <td className="py-3">{event.location || "N/A"}</td>
                     <td className="py-3">
-                      {event?.date ? new Date(event.date).toLocaleDateString() : 'N/A'}
+                      {event?.date
+                        ? new Date(event.date).toLocaleDateString()
+                        : "N/A"}
                     </td>
                     <td className="py-3">{event.host?.name || "N/A"}</td>
 
@@ -168,7 +174,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
                 ))}
               </tbody>
             </table>
-            
+
             {/* Search results info */}
             {searchTerm && (
               <div className="mt-4 text-sm text-gray-600">

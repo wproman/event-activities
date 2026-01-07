@@ -1,6 +1,4 @@
-
 "use client";
-
 
 import type { IUser } from "@/app/types/host.interface";
 import { DateCell } from "@/components/shared/cell/DateCell";
@@ -8,7 +6,6 @@ import { StatusBadgeCell } from "@/components/shared/cell/StatusBadgeCell";
 import { UserInfoCell } from "@/components/shared/cell/UserInfoCell";
 import type { Column } from "@/components/shared/ManagementTable";
 import { MapPin, Star, Tag } from "lucide-react";
-
 
 export const hostsColumns: Column<IUser>[] = [
   {
@@ -93,19 +90,21 @@ export const hostsColumns: Column<IUser>[] = [
     accessor: (host) => {
       // Create a custom status badge since StatusBadgeCell doesn't accept status prop
       // You can check if your IUser has isDeleted or status field
-      if ('isDeleted' in host && host.isDeleted !== undefined) {
+      if ("isDeleted" in host && host.isDeleted !== undefined) {
         // If IUser has isDeleted, use StatusBadgeCell
         return <StatusBadgeCell isDeleted={host.isDeleted as boolean} />;
-      } else if ('status' in host) {
+      } else if ("status" in host) {
         // If IUser has status field, create custom badge
-        const isActive = host.status === 'ACTIVE';
+        const isActive = host.status === "ACTIVE";
         return (
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            isActive 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {isActive ? 'Active' : 'Inactive'}
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              isActive
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {isActive ? "Active" : "Inactive"}
           </span>
         );
       } else {
@@ -117,11 +116,13 @@ export const hostsColumns: Column<IUser>[] = [
   {
     header: "Password Change",
     accessor: (host) => (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        host.needPasswordChange 
-          ? 'bg-red-100 text-red-800' 
-          : 'bg-green-100 text-green-800'
-      }`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          host.needPasswordChange
+            ? "bg-red-100 text-red-800"
+            : "bg-green-100 text-green-800"
+        }`}
+      >
         {host.needPasswordChange ? "Required" : "Not Required"}
       </span>
     ),

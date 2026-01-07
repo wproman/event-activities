@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Users, Calendar, MapPin } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Users, Calendar, MapPin } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -10,7 +10,8 @@ export default function Hero() {
           Never Go to Events <span className="text-primary">Alone</span> Again
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          Find like-minded people to join you for concerts, hiking, board games, sports, dinners, tech meetups — anything!
+          Find like-minded people to join you for concerts, hiking, board games,
+          sports, dinners, tech meetups — anything!
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
@@ -40,5 +41,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

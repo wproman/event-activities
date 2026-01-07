@@ -1,6 +1,5 @@
 // @/components/EventCard.tsx - A likely structure
 
-
 import { Event } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin } from "lucide-react";

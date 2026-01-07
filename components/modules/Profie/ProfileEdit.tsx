@@ -1,60 +1,55 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
+import { User } from "@/app/types";
+import EditProfileModal from "@/components/shared/EditProfieModal";
+import { Button } from "@/components/ui/button";
+import { revalidatePathFunction } from "@/services/event/eventDetails";
+import updateUserProfile from "@/services/user/updateUserProfile";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-import { User } from '@/app/types'
-import EditProfileModal from '@/components/shared/EditProfieModal'
-import { Button } from '@/components/ui/button'
-import { revalidatePathFunction } from '@/services/event/eventDetails'
-import updateUserProfile from '@/services/user/updateUserProfile'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-
-interface ProfileEditProp{
-  isOwnProfile:boolean,currentUser:any
+interface ProfileEditProp {
+  isOwnProfile: boolean;
+  currentUser: any;
 }
-const ProfileEdit = ({isOwnProfile,currentUser}:ProfileEditProp) => {
-      const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-       const [isLoading, setIsLoading] = useState(false);
-        useEffect(()=>{
-          async function fetchData() {
-        await revalidatePathFunction(`/my-profile`)
-          }
-          fetchData()
-        },[])
+const ProfileEdit = ({ isOwnProfile, currentUser }: ProfileEditProp) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    async function fetchData() {
+      await revalidatePathFunction(`/my-profile`);
+    }
+    fetchData();
+  }, []);
 
-
- const handleSaveProfile =async (updates: Partial<User>) => {
+  const handleSaveProfile = async (updates: Partial<User>) => {
     if (isOwnProfile) {
-        // console.log(updates);
-        
-      const result = await updateUserProfile(updates)
+      // console.log(updates);
+
+      const result = await updateUserProfile(updates);
       if (result.success) {
-        toast.success("profile update success full")
-        await revalidatePathFunction(`/my-profile`)
+        toast.success("profile update success full");
+        await revalidatePathFunction(`/my-profile`);
         setIsLoading(false);
-    setIsEditModalOpen(false)
-      }else{
+        setIsEditModalOpen(false);
+      } else {
         setIsLoading(false);
-    setIsEditModalOpen(false)
+        setIsEditModalOpen(false);
       }
-       
-      console.log("result",result);
-      
+
+      console.log("result", result);
     }
   };
 
   return (
     <div>
-          {isOwnProfile && (
-                <Button
-                  variant="outline"
-                  onClick={() => setIsEditModalOpen(true)}
-                >
-                  Edit Profile
-                </Button>
-              )}
-                {isOwnProfile && (
+      {isOwnProfile && (
+        <Button variant="outline" onClick={() => setIsEditModalOpen(true)}>
+          Edit Profile
+        </Button>
+      )}
+      {isOwnProfile && (
         <EditProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
@@ -65,7 +60,7 @@ const ProfileEdit = ({isOwnProfile,currentUser}:ProfileEditProp) => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileEdit
+export default ProfileEdit;

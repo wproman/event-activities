@@ -13,14 +13,12 @@ const RegisterForm = () => {
   const [state, formAction, isPending] = useActionState(registerUser, null);
   console.log(state, "state", isPending, "isPending");
 
-
-
-     useEffect(() => {
-      if (state && !state.success && state.message) {
-        toast.error(state.message);
-      }
-    }, [state]);
-return (
+  useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+  return (
     <form action={formAction}>
       <FieldGroup>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -28,7 +26,7 @@ return (
           <Field>
             <FieldLabel htmlFor="name">Full Name</FieldLabel>
             <Input id="name" name="name" type="text" placeholder="John Doe" />
-          <InputFieldError field="name" state = {state}/>
+            <InputFieldError field="name" state={state} />
           </Field>
 
           {/* Email */}
@@ -40,14 +38,14 @@ return (
               type="email"
               placeholder="m@example.com"
             />
-          <InputFieldError field="email" state = {state}/>
+            <InputFieldError field="email" state={state} />
           </Field>
 
           {/* Password */}
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input id="password" name="password" type="password" />
-           <InputFieldError field="password" state = {state}/>
+            <InputFieldError field="password" state={state} />
           </Field>
 
           {/* Bio */}
@@ -59,11 +57,11 @@ return (
               type="text"
               placeholder="Write a short bio..."
             />
-            <InputFieldError field="bio" state = {state}/>
+            <InputFieldError field="bio" state={state} />
           </Field>
 
           {/* Avatar URL */}
-   {/* <Field>
+          {/* <Field>
   <FieldLabel htmlFor="avatarUrl">
     Profile Picture URL <span className="text-gray-400">(Optional - can add later)</span>
   </FieldLabel>
@@ -81,13 +79,8 @@ return (
           {/* City */}
           <Field>
             <FieldLabel htmlFor="city">City</FieldLabel>
-            <Input
-              id="city"
-              name="city"
-              type="text"
-              placeholder="Dhaka"
-            />
-           <InputFieldError field="city" state = {state}/>
+            <Input id="city" name="city" type="text" placeholder="Dhaka" />
+            <InputFieldError field="city" state={state} />
           </Field>
 
           {/* Interests */}
@@ -101,7 +94,7 @@ return (
               type="text"
               placeholder="sports, coding, travel"
             />
-            <InputFieldError field="interests" state = {state}/>
+            <InputFieldError field="interests" state={state} />
           </Field>
         </div>
 

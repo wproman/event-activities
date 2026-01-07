@@ -1,5 +1,3 @@
-
-
 // // app/dashboard/book-events/page.tsx
 // "use client";
 
@@ -23,7 +21,7 @@
 //   const [user, setUser] = useState<any>(null);
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState<string | null>(null);
-  
+
 //   // Filters state
 
 // const [filters, setFilters] = useState({
@@ -39,20 +37,20 @@
 //     const fetchData = async () => {
 //       setLoading(true);
 //       setError(null);
-      
+
 //       try {
 //         // Fetch user info
 //         const userData = await userInfo();
 //         setUser(userData);
-        
+
 //         // Fetch all events
 //         const eventsData = await allEvents();
-        
+
 //         // Filter only OPEN/APPROVED events
-//         const openEvents = eventsData.filter((event: any) => 
+//         const openEvents = eventsData.filter((event: any) =>
 //           event.status === 'OPEN' || event.status === 'APPROVED'
 //         );
-        
+
 //         // Transform events
 //         const transformedEvents: Event[] = openEvents.map((event: any) => ({
 //           ...event,
@@ -62,7 +60,7 @@
 //           createdAt: new Date(event.createdAt),
 //           updatedAt: new Date(event.updatedAt),
 //         }));
-        
+
 //         setEvents(transformedEvents);
 //       } catch (err) {
 //         console.error('Error fetching data:', err);
@@ -71,7 +69,7 @@
 //         setLoading(false);
 //       }
 //     };
-    
+
 //     fetchData();
 //   }, []);
 
@@ -166,9 +164,9 @@
 //               <Filter className="h-5 w-5" />
 //               <CardTitle>Filters</CardTitle>
 //             </div>
-//             <Button 
-//               variant="outline" 
-//               size="sm" 
+//             <Button
+//               variant="outline"
+//               size="sm"
 //               onClick={handleClearFilters}
 //             >
 //               Clear All
@@ -201,7 +199,7 @@
 //             events available for booking
 //           </span>
 //         </div>
-        
+
 //         {filteredEvents.length > 0 && (
 //           <Badge variant="secondary">
 //             {filteredEvents.filter(e => e.isPaidEvent).length} Paid •{' '}
@@ -214,15 +212,15 @@
 //       {filteredEvents.length > 0 ? (
 //         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 //           {filteredEvents.map((event) => {
-//             const isFull = event.maxParticipants && event._count?.participants && 
+//             const isFull = event.maxParticipants && event._count?.participants &&
 //                           event._count.participants >= event.maxParticipants;
-            
+
 //             return (
 //               <Card key={event.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
 //                 <EventCard event={event} />
-                
+
 //                 <Separator className="my-4" />
-                
+
 //                 <CardContent className="pb-4">
 //                   <div className="flex flex-col gap-3">
 //                     <div className="flex items-center justify-between">
@@ -245,7 +243,7 @@
 //                         </Badge>
 //                       )}
 //                     </div>
-                    
+
 //                     {isFull ? (
 //                       <Button disabled variant="destructive" className="w-full">
 //                         Event Full
@@ -257,7 +255,7 @@
 //                         </Link>
 //                       </Button>
 //                     )}
-                    
+
 //                     {isFull && (
 //                       <p className="text-xs text-center text-destructive">
 //                         This event has reached maximum capacity
@@ -288,7 +286,6 @@
 //     </div>
 //   );
 // }
-
 
 // "use client";
 
@@ -321,7 +318,7 @@
 //   const [user, setUser] = useState<any>(null);
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState<string | null>(null);
-  
+
 //   // Filters state - use 'ALL' instead of empty string
 //   const [filters, setFilters] = useState<FilterState>({
 //     search: '',
@@ -336,20 +333,20 @@
 //     const fetchData = async () => {
 //       setLoading(true);
 //       setError(null);
-      
+
 //       try {
 //         // Fetch user info
 //         const userData = await userInfo();
 //         setUser(userData);
-        
+
 //         // Fetch all events
 //         const eventsData = await allEvents();
-        
+
 //         // Filter only OPEN/APPROVED events
-//         const openEvents = eventsData.filter((event: any) => 
+//         const openEvents = eventsData.filter((event: any) =>
 //           event.status === 'OPEN' || event.status === 'APPROVED'
 //         );
-        
+
 //         // Transform events
 //         const transformedEvents: Event[] = openEvents.map((event: any) => ({
 //           ...event,
@@ -359,7 +356,7 @@
 //           createdAt: new Date(event.createdAt),
 //           updatedAt: new Date(event.updatedAt),
 //         }));
-        
+
 //         setEvents(transformedEvents);
 //       } catch (err) {
 //         console.error('Error fetching data:', err);
@@ -368,7 +365,7 @@
 //         setLoading(false);
 //       }
 //     };
-    
+
 //     fetchData();
 //   }, []);
 
@@ -464,9 +461,9 @@
 //               <Filter className="h-5 w-5" />
 //               <CardTitle>Filters</CardTitle>
 //             </div>
-//             <Button 
-//               variant="outline" 
-//               size="sm" 
+//             <Button
+//               variant="outline"
+//               size="sm"
 //               onClick={handleClearFilters}
 //             >
 //               Clear All
@@ -499,7 +496,7 @@
 //             events available for booking
 //           </span>
 //         </div>
-        
+
 //         {filteredEvents.length > 0 && (
 //           <Badge variant="secondary">
 //             {filteredEvents.filter(e => e.isPaidEvent).length} Paid •{' '}
@@ -512,15 +509,15 @@
 //       {filteredEvents.length > 0 ? (
 //         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 //           {filteredEvents.map((event) => {
-//             const isFull = event.maxParticipants && event._count?.participants && 
+//             const isFull = event.maxParticipants && event._count?.participants &&
 //                           event._count.participants >= event.maxParticipants;
-            
+
 //             return (
 //               <Card key={event.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
 //                 <EventCard event={event} />
-                
+
 //                 <Separator className="my-4" />
-                
+
 //                 <CardContent className="pb-4">
 //                   <div className="flex flex-col gap-3">
 //                     <div className="flex items-center justify-between">
@@ -543,7 +540,7 @@
 //                         </Badge>
 //                       )}
 //                     </div>
-                    
+
 //                     {isFull ? (
 //                       <Button disabled variant="destructive" className="w-full">
 //                         Event Full
@@ -555,7 +552,7 @@
 //                         </Link>
 //                       </Button>
 //                     )}
-                    
+
 //                     {isFull && (
 //                       <p className="text-xs text-center text-destructive">
 //                         This event has reached maximum capacity
@@ -588,35 +585,69 @@
 // }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 
-import { Event, EventType } from '@/app/types';
-import EventFilters from '@/components/modules/Event/EventFilter';
-import { EventCard } from '@/components/shared/EventCard';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import allEvents from '@/services/event/allEvent';
-import userInfo from '@/services/user/userInfo';
-import { AlertCircle, Calendar, CalendarDays, Filter, Search } from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Event, EventType } from "@/app/types";
+import EventFilters from "@/components/modules/Event/EventFilter";
+import { EventCard } from "@/components/shared/EventCard";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import allEvents from "@/services/event/allEvent";
+import userInfo from "@/services/user/userInfo";
+import {
+  AlertCircle,
+  Calendar,
+  CalendarDays,
+  Filter,
+  Search,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function BookEventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Filters state - keep as empty string but handle it properly
   const [filters, setFilters] = useState({
-    search: '',
-    eventType: '' as EventType | '',  // Keep as empty string for compatibility
-    location: '',
-    date: '',
+    search: "",
+    eventType: "" as EventType | "", // Keep as empty string for compatibility
+    location: "",
+    date: "",
     isPaid: null as boolean | null,
   });
 
@@ -625,20 +656,21 @@ export default function BookEventsPage() {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         // Fetch user info
         const userData = await userInfo();
         setUser(userData);
-        
+
         // Fetch all events
         const eventsData = await allEvents();
-        
+
         // Filter only OPEN/APPROVED events
-        const openEvents = eventsData.filter((event: any) => 
-          event.status === 'OPEN' || event.status === 'APPROVED'
+        const openEvents = eventsData.filter(
+          (event: any) =>
+            event.status === "OPEN" || event.status === "APPROVED",
         );
-        
+
         // Transform events
         const transformedEvents: Event[] = openEvents.map((event: any) => ({
           ...event,
@@ -648,28 +680,34 @@ export default function BookEventsPage() {
           createdAt: new Date(event.createdAt),
           updatedAt: new Date(event.updatedAt),
         }));
-        
+
         setEvents(transformedEvents);
       } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load events');
+        console.error("Error fetching data:", err);
+        setError("Failed to load events");
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
   // Filter events based on filters
   const filteredEvents = events.filter((event) => {
-    if (filters.search && !event.title.toLowerCase().includes(filters.search.toLowerCase())) {
+    if (
+      filters.search &&
+      !event.title.toLowerCase().includes(filters.search.toLowerCase())
+    ) {
       return false;
     }
     if (filters.eventType && event.eventType !== filters.eventType) {
       return false;
     }
-    if (filters.location && !event.location.toLowerCase().includes(filters.location.toLowerCase())) {
+    if (
+      filters.location &&
+      !event.location.toLowerCase().includes(filters.location.toLowerCase())
+    ) {
       return false;
     }
     if (filters.date) {
@@ -686,16 +724,18 @@ export default function BookEventsPage() {
 
   const handleClearFilters = () => {
     setFilters({
-      search: '',
-      eventType: '',  // Keep as empty string
-      location: '',
-      date: '',
+      search: "",
+      eventType: "", // Keep as empty string
+      location: "",
+      date: "",
       isPaid: null,
     });
   };
 
   // Get unique locations for filter
-  const uniqueLocations = [...new Set(events.map(e => e.location).filter(Boolean))];
+  const uniqueLocations = [
+    ...new Set(events.map((e) => e.location).filter(Boolean)),
+  ];
 
   // Now you need to update your EventFilters component
   // The issue is in your EventFilters component where it has a Select.Item with value=""
@@ -755,11 +795,7 @@ export default function BookEventsPage() {
               <Filter className="h-5 w-5" />
               <CardTitle>Filters</CardTitle>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleClearFilters}
-            >
+            <Button variant="outline" size="sm" onClick={handleClearFilters}>
               Clear All
             </Button>
           </div>
@@ -783,18 +819,18 @@ export default function BookEventsPage() {
         <div className="flex items-center gap-2">
           <CalendarDays className="h-5 w-5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            Showing{' '}
+            Showing{" "}
             <span className="font-medium text-foreground">
               {filteredEvents.length}
-            </span>{' '}
+            </span>{" "}
             events available for booking
           </span>
         </div>
-        
+
         {filteredEvents.length > 0 && (
           <Badge variant="secondary">
-            {filteredEvents.filter(e => e.isPaidEvent).length} Paid •{' '}
-            {filteredEvents.filter(e => !e.isPaidEvent).length} Free
+            {filteredEvents.filter((e) => e.isPaidEvent).length} Paid •{" "}
+            {filteredEvents.filter((e) => !e.isPaidEvent).length} Free
           </Badge>
         )}
       </div>
@@ -803,24 +839,29 @@ export default function BookEventsPage() {
       {filteredEvents.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredEvents.map((event) => {
-            const isFull = event.maxParticipants && event._count?.participants && 
-                          event._count.participants >= event.maxParticipants;
-            
+            const isFull =
+              event.maxParticipants &&
+              event._count?.participants &&
+              event._count.participants >= event.maxParticipants;
+
             return (
-              <Card key={event.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+              <Card
+                key={event.id}
+                className="overflow-hidden group hover:shadow-lg transition-shadow"
+              >
                 <EventCard event={event} />
-                
+
                 <Separator className="my-4" />
-                
+
                 <CardContent className="pb-4">
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {event.date.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
+                          {event.date.toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
                           })}
                         </span>
                       </div>
@@ -834,7 +875,7 @@ export default function BookEventsPage() {
                         </Badge>
                       )}
                     </div>
-                    
+
                     {isFull ? (
                       <Button disabled variant="destructive" className="w-full">
                         Event Full
@@ -842,11 +883,11 @@ export default function BookEventsPage() {
                     ) : (
                       <Button asChild className="w-full">
                         <Link href={`/dashboard/book-events/${event.id}`}>
-                          {event.isPaidEvent ? 'Book Now' : 'Join Event'}
+                          {event.isPaidEvent ? "Book Now" : "Join Event"}
                         </Link>
                       </Button>
                     )}
-                    
+
                     {isFull && (
                       <p className="text-xs text-center text-destructive">
                         This event has reached maximum capacity

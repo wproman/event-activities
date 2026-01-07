@@ -83,14 +83,14 @@
 //   );
 
 //   // Calculate average rating
-//   const averageRating = reviews?.length > 0 
-//     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
+//   const averageRating = reviews?.length > 0
+//     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
 //     : 0;
 
 //   // Handle form submission
 //   const onSubmit = async (data: ReviewFormData) => {
 //     setIsSubmitting(true);
-    
+
 //     try {
 //       const result = await creatReview({
 //         eventId: event.id,
@@ -187,19 +187,19 @@
 //                 Based on {reviews?.length || 0} reviews
 //               </p>
 //             </div>
-            
+
 //             {/* Rating Distribution */}
 //             <div className="space-y-1">
 //               {[5, 4, 3, 2, 1].map((rating) => {
 //                 const count = reviews?.filter(r => r.rating === rating).length || 0;
 //                 const percentage = reviews?.length ? (count / reviews.length) * 100 : 0;
-                
+
 //                 return (
 //                   <div key={rating} className="flex items-center gap-2 text-sm">
 //                     <span className="w-8">{rating} ★</span>
 //                     <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-//                       <div 
-//                         className="h-full bg-yellow-400" 
+//                       <div
+//                         className="h-full bg-yellow-400"
 //                         style={{ width: `${percentage}%` }}
 //                       />
 //                     </div>

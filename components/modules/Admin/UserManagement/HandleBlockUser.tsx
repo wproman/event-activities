@@ -1,39 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import { User, UserStatus } from '@/app/types';
-import blockUser from '@/services/admin/blockUser';
-import { revalidatePathFunction } from '@/services/event/eventDetails';
-import { useEffect, useState } from 'react';
+import { User, UserStatus } from "@/app/types";
+import blockUser from "@/services/admin/blockUser";
+import { revalidatePathFunction } from "@/services/event/eventDetails";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const HandleBlockUser = ({user}:{user:User}) => {
+const HandleBlockUser = ({ user }: { user: User }) => {
   const [isStatusChange, setIsStatusChange] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     async function fetchData() {
-      await revalidatePathFunction(`/admin/dashboard/manage-host`)
+      await revalidatePathFunction(`/admin/dashboard/manage-host`);
     }
-    fetchData()
-  },[])
+    fetchData();
+  }, []);
 
   // Helper to check if user is blocked
-  const isUserBlocked = user.status === 'BLOCKED';
-  
+  const isUserBlocked = user.status === "BLOCKED";
+
   // Determine new status
   const getNewStatus = (currentStatus: UserStatus): UserStatus => {
-    return currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+    return currentStatus === "BLOCKED" ? "ACTIVE" : "BLOCKED";
   };
 
-  const handleBlock = async (id:string, currentStatus: UserStatus) => {
+  const handleBlock = async (id: string, currentStatus: UserStatus) => {
     try {
       const newStatus = getNewStatus(currentStatus);
       const updateData = { status: newStatus };
-      
+
       const res = await blockUser(updateData, id);
 
       if (res.success) {
-        toast.success(`User ${newStatus === 'ACTIVE' ? "unblocked" : "blocked"} successfully`);
+        toast.success(
+          `User ${newStatus === "ACTIVE" ? "unblocked" : "blocked"} successfully`,
+        );
         setIsStatusChange(!isStatusChange);
       } else {
         toast.error(res.message || "Failed to update user status");
@@ -53,7 +55,7 @@ const HandleBlockUser = ({user}:{user:User}) => {
     >
       {isUserBlocked ? "Unblock" : "Block"}
     </button>
-  )
-}
+  );
+};
 
 export default HandleBlockUser;

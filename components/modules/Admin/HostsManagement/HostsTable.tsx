@@ -1,6 +1,5 @@
 "use client";
 
-
 import { IUser } from "@/app/types/host.interface";
 import DeleteConfirmationDialog from "@/components/shared/DeleteConfirmationDialog";
 import ManagementTable from "@/components/shared/ManagementTable";

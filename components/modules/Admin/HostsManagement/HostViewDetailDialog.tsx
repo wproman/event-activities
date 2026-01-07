@@ -36,7 +36,7 @@ const HostViewDetailDialog = ({
   if (!host) {
     return null;
   }
-  
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="min-w-5xl max-h-[90vh] flex flex-col p-0">
@@ -55,16 +55,15 @@ const HostViewDetailDialog = ({
             </Avatar>
             <div className="flex-1 text-center sm:text-left">
               <h2 className="text-3xl font-bold mb-1">{host?.name}</h2>
-              <h3 className="text-xl text-muted-foreground mb-2">{host?.fullName}</h3>
+              <h3 className="text-xl text-muted-foreground mb-2">
+                {host?.fullName}
+              </h3>
               <p className="text-muted-foreground mb-2 flex items-center justify-center sm:justify-start gap-2">
                 <Mail className="h-4 w-4" />
                 {host?.email}
               </p>
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                <Badge
-                  variant="default"
-                  className="text-sm capitalize"
-                >
+                <Badge variant="default" className="text-sm capitalize">
                   {host?.role?.toLowerCase() || "host"}
                 </Badge>
                 {host?.ratingAvg !== undefined && host.ratingAvg > 0 && (
@@ -86,9 +85,7 @@ const HostViewDetailDialog = ({
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <User className="h-5 w-5 text-blue-600" />
-                <h3 className="font-semibold text-lg">
-                  Personal Information
-                </h3>
+                <h3 className="font-semibold text-lg">Personal Information</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/50 p-4 rounded-lg">
                 <div className="flex items-start gap-3">
@@ -139,7 +136,7 @@ const HostViewDetailDialog = ({
                       </div>
                     </div>
                   )}
-                  
+
                   {host?.interests && host.interests.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-4">
@@ -176,10 +173,7 @@ const HostViewDetailDialog = ({
                 {host?.city && (
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 mt-1 text-muted-foreground" />
-                    <InfoRow
-                      label="City"
-                      value={host.city}
-                    />
+                    <InfoRow label="City" value={host.city} />
                   </div>
                 )}
                 {host?.ratingAvg !== undefined && host.ratingAvg > 0 && (

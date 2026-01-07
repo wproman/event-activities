@@ -1,16 +1,15 @@
 "use client";
 
-
 import { UserInfo } from "@/app/types/user.interface";
 import LogoutButton from "@/components/shared/LogoutButton";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logoutUser } from "@/services/auth/logoutUser";
 import { Settings, User } from "lucide-react";
@@ -20,7 +19,9 @@ interface UserDropdownProps {
   userInfo: UserInfo;
 }
 
+
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
+console.log("userInfo in dropdown", userInfo);
   const handleLogout = async () => {
     await logoutUser();
   };
@@ -29,7 +30,11 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
           <span className="text-sm font-semibold">
-            {userInfo.name.charAt(0).toUpperCase()}
+ {userInfo?.name?.trim()?.[0]?.toUpperCase() ?? "U"}
+
+
+
+
           </span>
         </Button>
       </DropdownMenuTrigger>
