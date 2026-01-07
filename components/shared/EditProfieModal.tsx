@@ -10,10 +10,38 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import Modal from "./Modal";
 
-// Define or import your interest constants
-type Interest = string;
-const ALL_INTERESTS: Interest[] = []; // Replace with actual array
-const INTEREST_LABELS: Record<Interest, string> = {}; // Replace with actual mapping
+// Define your interest list here (or import from a constants file)
+const ALL_INTERESTS: string[] = [
+  "programming", "reading", "hiking", "traveling", "cooking",
+  "photography", "music", "sports", "gaming", "art", "technology",
+  "movies", "fitness", "food", "writing", "dancing", "science",
+  "business", "education", "nature", "volunteering"
+];
+
+// Create readable labels for display
+const INTEREST_LABELS: Record<string, string> = {
+  "programming": "Programming",
+  "reading": "Reading",
+  "hiking": "Hiking",
+  "traveling": "Traveling",
+  "cooking": "Cooking",
+  "photography": "Photography",
+  "music": "Music",
+  "sports": "Sports",
+  "gaming": "Gaming",
+  "art": "Art",
+  "technology": "Technology",
+  "movies": "Movies",
+  "fitness": "Fitness",
+  "food": "Food",
+  "writing": "Writing",
+  "dancing": "Dancing",
+  "science": "Science",
+  "business": "Business",
+  "education": "Education",
+  "nature": "Nature",
+  "volunteering": "Volunteering"
+};
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -38,7 +66,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     bio: user.bio || "",
     city: user.city || "",
     avatarUrl: user.avatarUrl || "",
-    interests: user.interests || [],
+    interests: user.interests || [], // This should be string[] based on your schema
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -46,11 +74,16 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handleInterestToggle = (interest: string) => {
     setFormData((prev) => {
       const currentInterests = prev.interests || [];
+      const isChecked = currentInterests.includes(interest);
+      
+      // Create a new array based on whether interest is being added or removed
+      const newInterests = isChecked
+        ? currentInterests.filter((i) => i !== interest) // Remove
+        : [...currentInterests, interest]; // Add
+      
       return {
         ...prev,
-        interests: currentInterests.includes(interest)
-          ? currentInterests.filter((i) => i !== interest)
-          : [...currentInterests, interest],
+        interests: newInterests,
       };
     });
   };
@@ -70,8 +103,18 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     
     setIsLoading(true);
     try {
-      // Send the form data directly (it already matches User type)
-      await onSave(formData);
+      // Log what's being sent for debugging
+      console.log("Saving profile data:", formData);
+      
+      // Filter out any empty interest strings
+      const cleanedData = {
+        ...formData,
+        interests: formData.interests?.filter(interest => interest.trim() !== "") || []
+      };
+      
+      await onSave(cleanedData);
+    } catch (error) {
+      console.error("Error in form submission:", error);
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +172,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
         {/* Interests Checkboxes */}
         <div className="space-y-3">
-          <Label>Interests</Label>
+          <Label>Interests ({formData.interests?.length || 0} selected)</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {ALL_INTERESTS.map((interest) => (
               <div key={interest} className="flex items-center space-x-2">
@@ -142,11 +185,18 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   htmlFor={`interest-${interest}`}
                   className="text-sm font-normal cursor-pointer"
                 >
-                  {INTEREST_LABELS[interest]}
+                  {INTEREST_LABELS[interest] || interest}
                 </Label>
               </div>
             ))}
           </div>
+          {formData.interests && formData.interests.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                Selected: {formData.interests.join(", ")}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
