@@ -4,10 +4,16 @@
 import { User } from "@/app/types";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import Modal from "./Modal";
+
+// Define or import your interest constants
+type Interest = string;
+const ALL_INTERESTS: Interest[] = []; // Replace with actual array
+const INTEREST_LABELS: Record<Interest, string> = {}; // Replace with actual mapping
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -26,29 +32,33 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   isLoading,
   setIsLoading,
 }) => {
-  const [formData, setFormData] = useState({
+  // Initialize form data with User type fields
+  const [formData, setFormData] = useState<Partial<User>>({
     name: user.name,
     bio: user.bio || "",
-    // location: user.location || "",
-    // image: user.image || "",
+    city: user.city || "",
+    avatarUrl: user.avatarUrl || "",
     interests: user.interests || [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  //   const handleInterestToggle = (interest: Interest) => {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       interests: prev.interests.includes(interest)
-  //         ? prev.interests.filter((i) => i !== interest)
-  //         : [...prev.interests, interest],
-  //     }));
-  //   };
+  const handleInterestToggle = (interest: string) => {
+    setFormData((prev) => {
+      const currentInterests = prev.interests || [];
+      return {
+        ...prev,
+        interests: currentInterests.includes(interest)
+          ? currentInterests.filter((i) => i !== interest)
+          : [...currentInterests, interest],
+      };
+    });
+  };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (formData.name.length < 2)
+    if (!formData.name?.trim()) newErrors.name = "Name is required";
+    if (formData.name && formData.name.length < 2)
       newErrors.name = "Name must be at least 2 characters";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -57,10 +67,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // simulate API call
-    onSave(formData);
-    setIsLoading(false);
+    try {
+      // Send the form data directly (it already matches User type)
+      await onSave(formData);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -71,7 +85,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           <Label htmlFor="name">Name *</Label>
           <Input
             id="name"
-            value={formData.name}
+            value={formData.name || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter your name"
             className={errors.name ? "border-red-500" : ""}
@@ -81,24 +95,24 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
         {/* Profile Image Input */}
         <div className="space-y-2">
-          <Label htmlFor="image">Profile Image URL</Label>
-          {/* <Input
-            id="image"
-            value={formData.image}
-            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+          <Label htmlFor="avatarUrl">Profile Image URL</Label>
+          <Input
+            id="avatarUrl"
+            value={formData.avatarUrl || ""}
+            onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
             placeholder="https://example.com/image.jpg"
-          /> */}
+          />
         </div>
 
-        {/* Location Input */}
+        {/* City Input */}
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
-          {/* <Input
-            id="location"
-            value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+          <Label htmlFor="city">City</Label>
+          <Input
+            id="city"
+            value={formData.city || ""}
+            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
             placeholder="City, State"
-          /> */}
+          />
         </div>
 
         {/* Bio Textarea */}
@@ -106,7 +120,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           <Label htmlFor="bio">Bio</Label>
           <Textarea
             id="bio"
-            value={formData.bio}
+            value={formData.bio || ""}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
             placeholder="Tell us about yourself..."
             rows={4}
@@ -114,14 +128,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         </div>
 
         {/* Interests Checkboxes */}
-        {/* <div className="space-y-3">
+        <div className="space-y-3">
           <Label>Interests</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {ALL_INTERESTS.map((interest) => (
               <div key={interest} className="flex items-center space-x-2">
                 <Checkbox
                   id={`interest-${interest}`}
-                  checked={formData.interests.includes(interest)}
+                  checked={formData.interests?.includes(interest) || false}
                   onCheckedChange={() => handleInterestToggle(interest)}
                 />
                 <Label
@@ -133,7 +147,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 pt-4">
