@@ -88,7 +88,7 @@ const DeleteEventPage = () => {
             )}
           </Button>
           <Button variant="outline" className="w-full" asChild>
-            <Link href="/host/events">
+            <Link href="/host/dashboard/my-events">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Cancel
             </Link>

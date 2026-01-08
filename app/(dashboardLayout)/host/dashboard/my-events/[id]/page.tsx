@@ -1,4 +1,5 @@
 // app/(dashboardLayout)/host/events/[id]/page.tsx
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -106,7 +107,7 @@ const EventDetailPage = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api/v1"}/events/${eventId}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api/v1"}/events/${eventId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -118,7 +119,7 @@ const EventDetailPage = () => {
       }
 
       toast.success("Event deleted successfully");
-      router.push("/host/events");
+      router.push("/host/dashboard/my-events");
       router.refresh();
     } catch (error: any) {
       console.error("Error deleting event:", error);
@@ -183,7 +184,7 @@ const EventDetailPage = () => {
 
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/host/events/${eventId}/edit`}>
+                <Link href={`/host/dashboard/my-events/${eventId}/edit`}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Event
                 </Link>

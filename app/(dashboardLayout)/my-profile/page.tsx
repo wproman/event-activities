@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import allEvents from "@/services/event/allEvent";
-import getUserEventParticipants from "@/services/eventParticipents.ts/getUserEventParticipents";
+import getUserEventParticipants from "@/services/eventParticipents/getUserEventParticipents";
 import getAllReview from "@/services/review/getAllReview";
 import userInfo from "@/services/user/userInfo";
 import { Calendar, MapPin, Star } from "lucide-react";
