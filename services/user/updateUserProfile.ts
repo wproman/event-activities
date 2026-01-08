@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation */
 import { getCookie } from "../auth/tokenHandlers";
 
-const updateUserProfile = async (updatedData: any) => {
+const updateUserProfile = async (userId:string,updatedData: any) => {
   try {
     // Bangla: Client-side cookie থেকে accessToken নিচ্ছি
     // English: Getting token from client cookies
@@ -18,7 +19,7 @@ const updateUserProfile = async (updatedData: any) => {
     // English: Sending API request with eventId
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/updateMyProfie`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/users/update/${userId}`, // 
       {
         method: "PATCH",
         headers: {
@@ -36,7 +37,7 @@ const updateUserProfile = async (updatedData: any) => {
 
       return {
         success: false,
-        message: errorData?.message || "Failed to updte profile",
+        message: errorData?.message || "Failed to update profile",
       };
     }
 

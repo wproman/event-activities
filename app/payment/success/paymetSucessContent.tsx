@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -140,7 +141,7 @@ function PaymentSuccessContent() {
           </CardContent>
           <CardFooter className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="default" className="w-full sm:w-auto">
-              <Link href="/dashboard/my-events">
+              <Link href="/dashboard/my-event">
                 <Ticket className="mr-2 h-4 w-4" />
                 View My Events
               </Link>
@@ -286,7 +287,7 @@ function PaymentSuccessContent() {
           
           <CardFooter className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="default" className="w-full sm:w-auto">
-              <Link href="/dashboard/my-events">
+              <Link href="/dashboard/my-event">
                 <Ticket className="mr-2 h-4 w-4" />
                 View My Events
               </Link>

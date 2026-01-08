@@ -4,41 +4,45 @@
 import { User } from "@/app/types";
 import EditProfileModal from "@/components/shared/EditProfieModal";
 import { Button } from "@/components/ui/button";
-import { revalidatePathFunction } from "@/services/event/eventDetails";
 import updateUserProfile from "@/services/user/updateUserProfile";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface ProfileEditProp {
   isOwnProfile: boolean;
-  currentUser: any;
+  currentUser: User;
 }
+
 const ProfileEdit = ({ isOwnProfile, currentUser }: ProfileEditProp) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    async function fetchData() {
-      await revalidatePathFunction(`/my-profile`);
-    }
-    fetchData();
-  }, []);
+  const router = useRouter(); // Use router to refresh page
 
   const handleSaveProfile = async (updates: Partial<User>) => {
-    if (isOwnProfile) {
-      // console.log(updates);
-
-      const result = await updateUserProfile(updates);
+    setIsLoading(true);
+    
+    try {
+      // Call the update service
+      const result = await updateUserProfile(currentUser.id, updates);
+      
       if (result.success) {
-        toast.success("profile update success full");
-        await revalidatePathFunction(`/my-profile`);
-        setIsLoading(false);
+        // Show success message
+        toast.success("Profile updated successfully");
+        
+        // Close the modal
         setIsEditModalOpen(false);
+        
+        // Refresh the page to get updated data
+        router.refresh();
       } else {
-        setIsLoading(false);
-        setIsEditModalOpen(false);
+        toast.error(result.message || "Failed to update profile");
       }
-
-      console.log("result", result);
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      toast.error(error?.message || "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
