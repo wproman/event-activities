@@ -1,5 +1,5 @@
 import EventFilters from "@/components/modules/Event/EventFilter";
-import getAllEventAndParticipents from "@/services/eventParticipents.ts/getAllEventParticipents";
+import getAllEventAndParticipents from "@/services/eventParticipents/getAllEventParticipents";
 
 import getAllReview from "@/services/review/getAllReview";
 import userInfo from "@/services/user/userInfo";
