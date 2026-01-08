@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation*/
 "use server";
 
 import { serverFetch } from "@/lib/server-fetch"; // Adjust the path if needed

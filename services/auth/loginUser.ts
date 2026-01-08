@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation */
 "use server";
 
 import { loginValidationZodSchema } from "@/app/zod/auth.validation";

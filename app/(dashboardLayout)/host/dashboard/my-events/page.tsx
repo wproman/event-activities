@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 export const dynamic = "force-dynamic";
 
 import EventFilterClient from "@/components/modules/Event/EventfiterClient";

@@ -218,4 +218,4 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   );
 };
 
-export default EditProfileModal;
+export default EditProfileModal; 

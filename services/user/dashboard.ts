@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation */
 "use server";
 
 import userInfo from "./userInfo";

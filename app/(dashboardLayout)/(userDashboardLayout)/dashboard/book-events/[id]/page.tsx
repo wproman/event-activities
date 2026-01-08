@@ -1,4 +1,5 @@
 // app/events/[id]/book/page.tsx
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 "use client";
 
 import { Event } from "@/app/types";
@@ -89,13 +90,14 @@ const handleJoinEvent = async () => {
       const paymentResult = await createPaymentIntent(eventId);
       console.log("Payment intent result:", paymentResult);
       
-      if (paymentResult.success && paymentResult.data?.paymentUrl) {
-        // Redirect to Stripe Checkout
-        window.location.href = paymentResult.data.paymentUrl;
-        return;
-      } else {
-        setError(paymentResult.message || "Failed to create payment");
-      }
+    if (paymentResult.success && paymentResult.data?.paymentUrl) {
+  // Redirect to Stripe Checkout
+  window.location.href = paymentResult.data.paymentUrl;
+  return;
+} else {
+  // Show the actual message from backend
+  setError(paymentResult.message || "Failed to create payment");
+}
     } else {
       // For free events: Use existing eventJoining service
       const result = await eventJoining(eventId);

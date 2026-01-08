@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation */
 import { getCookie } from "../auth/tokenHandlers";
 
 const updateUserProfile = async (userId:string,updatedData: any) => {

@@ -1,4 +1,3 @@
-// services/payment/createPaymentIntent.ts
 import { getCookie } from "../auth/tokenHandlers";
 
 const createPaymentIntent = async (eventId: string) => {
@@ -18,15 +17,24 @@ const createPaymentIntent = async (eventId: string) => {
       }
     );
 
+    const data = await response.json(); // Always parse JSON first
+    
     if (!response.ok) {
-      throw new Error("Failed to create payment intent");
+      // Return the actual error message from backend
+      return {
+        success: false,
+        message: data.message || "Failed to create payment intent",
+        data: data.data // Include any additional data
+      };
     }
 
-    const data = await response.json();
     return data;
   } catch (error: any) {
     console.log(error, "from createPaymentIntent function");
-    return { success: false, message: error.message };
+    return { 
+      success: false, 
+      message: error.message || "Network error occurred" 
+    };
   }
 };
 

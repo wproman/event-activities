@@ -887,17 +887,17 @@ const HostDashboardPage = () => {
               Host Account
             </Badge>
             {user?.ratingAvg > 0 && (
-              <>
+              
                 <Badge variant="outline" className="gap-1">
                   <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                   {user.ratingAvg.toFixed(1)} ({user.ratingCount} reviews)
                 </Badge>
-              </>
+              
             )}
           </div>
         </div>
         <Button asChild className="gap-2">
-          <Link href="/dashboard/crate-event">
+          <Link href="/host/dashboard/create-event">
             <PlusCircle className="h-4 w-4" />
             Create New Event
           </Link>
@@ -1057,7 +1057,7 @@ const HostDashboardPage = () => {
                   <h3 className="text-lg font-medium mb-2">No events yet</h3>
                   <p className="text-muted-foreground mb-4">Create your first event to get started!</p>
                   <Button asChild>
-                    <Link href="/dashboard/crate-event">
+                    <Link href="/host/dashboard/create-event">
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Create Event
                     </Link>
@@ -1078,7 +1078,7 @@ const HostDashboardPage = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-                  <Link href="/dashboard/crate-event">
+                  <Link href="/host/dashboard/create-event">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                         <PlusCircle className="h-5 w-5 text-blue-600" />
