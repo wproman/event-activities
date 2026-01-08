@@ -718,55 +718,54 @@ const HostDashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
 
-  // Fetch host user info
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        // Get host user info
-        const userData = await getHostDashboardUser();
-        setUser(userData);
+useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      const dashboardData = await getHostDashboardUser();
+      
+      // Extract user info
+      setUser({
+        name: dashboardData.name,
+        email: dashboardData.email,
+        ratingAvg: dashboardData.ratingAvg || 0,
+        ratingCount: dashboardData.ratingCount || 0,
+        role: dashboardData.role
+      });
 
-        // Set empty stats
-        setStats({
-          totalEvents: 0,
-          upcomingEvents: 0,
-          totalParticipants: 0,
-          totalRevenue: 0,
-          pendingEvents: 0,
-          approvalRate: 0
-        });
+      // Set stats (always available from the new function)
+      setStats(dashboardData.stats);
+      
+      // Set events and participants
+      setRecentEvents(dashboardData.recentEvents || []);
+      setUpcomingEvents(dashboardData.upcomingEvents || []);
+      setRecentParticipants(dashboardData.recentParticipants || []);
 
-        // Empty arrays
-        setRecentEvents([]);
-        setUpcomingEvents([]);
-        setRecentParticipants([]);
+    } catch (error) {
+      console.error("Error fetching host dashboard data:", error);
+      // Fallback data
+      setStats({
+        totalEvents: 0,
+        upcomingEvents: 0,
+        totalParticipants: 0,
+        totalRevenue: 0,
+        pendingEvents: 0,
+        approvalRate: 0
+      });
+      setRecentEvents([]);
+      setUpcomingEvents([]);
+      setRecentParticipants([]);
+      setUser({
+        name: "Guest Host",
+        email: "host@example.com",
+        role: "HOST"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      } catch (error) {
-        console.error("Error fetching host dashboard data:", error);
-        // Set fallback data
-        setStats({
-          totalEvents: 0,
-          upcomingEvents: 0,
-          totalParticipants: 0,
-          totalRevenue: 0,
-          pendingEvents: 0,
-          approvalRate: 0
-        });
-        setRecentEvents([]);
-        setUpcomingEvents([]);
-        setRecentParticipants([]);
-        setUser({
-          name: "Guest Host",
-          email: "host@example.com",
-          role: "HOST"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, []);
+  fetchDashboardData();
+}, []);
 
   const getEventStatusBadge = (status: string, isApproved: boolean) => {
     if (!isApproved) {
@@ -991,7 +990,7 @@ const HostDashboardPage = () => {
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/dashboard/host/events">View All</Link>
+                    <Link href="/host/dashboard/my-events">View All</Link>
                 </Button>
               </div>
             </CardHeader>
@@ -1034,13 +1033,13 @@ const HostDashboardPage = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                              <Link href={`/dashboard/host/events/${event.id}`}>
+                             <Link href={`/host/dashboard/my-events/${event.id}`}>
                                 <Eye className="h-4 w-4 mr-2" />
                                 View Details
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                              <Link href={`/dashboard/host/events/${event.id}/edit`}>
+                      <Link href={`/host/dashboard/my-events/${event.id}/edit`}>
                                 <Edit className="h-4 w-4 mr-2" />
                                 Edit Event
                               </Link>
@@ -1078,60 +1077,60 @@ const HostDashboardPage = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-                  <Link href="/host/dashboard/create-event">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <PlusCircle className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-medium">Create Event</div>
-                        <div className="text-sm text-muted-foreground">Start a new event</div>
-                      </div>
-                    </div>
-                  </Link>
-                </Button>
+  <Link href="/host/dashboard/create-event">
+    <div className="flex items-center gap-3">
+      <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+        <PlusCircle className="h-5 w-5 text-blue-600" />
+      </div>
+      <div className="text-left">
+        <div className="font-medium">Create Event</div>
+        <div className="text-sm text-muted-foreground">Start a new event</div>
+      </div>
+    </div>
+  </Link>
+</Button>
 
                 <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-                  <Link href="/dashboard/host/events">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <Eye className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-medium">Manage Events</div>
-                        <div className="text-sm text-muted-foreground">View all your events</div>
-                      </div>
-                    </div>
-                  </Link>
-                </Button>
+  <Link href="/host/dashboard/my-events">
+    <div className="flex items-center gap-3">
+      <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+        <Eye className="h-5 w-5 text-green-600" />
+      </div>
+      <div className="text-left">
+        <div className="font-medium">Manage Events</div>
+        <div className="text-sm text-muted-foreground">View all your events</div>
+      </div>
+    </div>
+  </Link>
+</Button>
 
                 <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-                  <Link href="/dashboard/host/participants">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                        <Users className="h-5 w-5 text-purple-600" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-medium">Participants</div>
-                        <div className="text-sm text-muted-foreground">Manage attendees</div>
-                      </div>
-                    </div>
-                  </Link>
-                </Button>
+  <Link href="/host/dashboard/manage-participants">
+    <div className="flex items-center gap-3">
+      <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+        <Users className="h-5 w-5 text-purple-600" />
+      </div>
+      <div className="text-left">
+        <div className="font-medium">Participants</div>
+        <div className="text-sm text-muted-foreground">Manage attendees</div>
+      </div>
+    </div>
+  </Link>
+</Button>
 
-                <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-                  <Link href="/dashboard/host/analytics">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                        <BarChart3 className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-medium">Analytics</div>
-                        <div className="text-sm text-muted-foreground">View insights & reports</div>
-                      </div>
-                    </div>
-                  </Link>
-                </Button>
+<Button variant="outline" className="h-auto py-4 justify-start" asChild>
+  <Link href="/host/dashboard/analytics">
+    <div className="flex items-center gap-3">
+      <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+        <BarChart3 className="h-5 w-5 text-orange-600" />
+      </div>
+      <div className="text-left">
+        <div className="font-medium">Analytics</div>
+        <div className="text-sm text-muted-foreground">View insights & reports</div>
+      </div>
+    </div>
+  </Link>
+</Button>
               </div>
             </CardContent>
           </Card>
