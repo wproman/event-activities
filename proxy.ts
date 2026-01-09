@@ -7,24 +7,39 @@ import { deleteCookie } from './services/auth/tokenHandlers';
 
 
 // This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest) { // proxy ta call kothai korbo ? request ta kotha theke asche ? (support)
-    
+export async function proxy(request: NextRequest) {
+
     const pathname = request.nextUrl.pathname;
 
     const accessToken = request.cookies.get("accessToken")?.value || null;
 
-    let userRole: UserRole | null = null;
-    if (accessToken) { // support
-        const verifiedToken: JwtPayload | string = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string);
+   let userRole: UserRole | null = null;
+if (accessToken) {
+    try {
+        const verifiedToken: JwtPayload | string = jwt.verify(
+            accessToken, 
+            process.env.JWT_ACCESS_SECRET as string
+        );
 
         if (typeof verifiedToken === "string") {
-            deleteCookie("accessToken");
-            deleteCookie("refreshToken");
+         
+            await deleteCookie("accessToken")
+            await deleteCookie("refreshToken")
+
             return NextResponse.redirect(new URL('/login', request.url));
         }
 
         userRole = verifiedToken.role;
+    } catch (error) {
+        // Token is invalid, expired, or malformed
+        console.error("Token verification failed:", error);
+        // cookieStore.delete("accessToken");
+        // cookieStore.delete("refreshToken");
+        await deleteCookie("accessToken")
+            await deleteCookie("refreshToken")
+        return NextResponse.redirect(new URL('/login', request.url));
     }
+}
 
     const routerOwner = getRouteOwner(pathname);
     //path = /doctor/appointments => "DOCTOR"
@@ -36,7 +51,7 @@ export async function proxy(request: NextRequest) { // proxy ta call kothai korb
     // Rule 1 : User is logged in and trying to access auth route. Redirect to default dashboard
     if (accessToken && isAuth) {
         return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url))
-    }    
+    }
 
 
     // Rule 2 : User is trying to access open public route
@@ -58,18 +73,18 @@ export async function proxy(request: NextRequest) { // proxy ta call kothai korb
     }
 
     // Rule 4 : User is trying to access role based protected route
-    if (routerOwner === "ADMIN" || routerOwner === "USER" || routerOwner === "HOST") {
+    if (routerOwner === "ADMIN" || routerOwner === "HOST" || routerOwner === "USER") {
         if (userRole !== routerOwner) {
             return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url))
         }
     }
-    // console.log(userRole);
+    console.log(userRole);
 
     return NextResponse.next();
 }
 
 
-           //aita kokhon call hoi ? (support)
+
 export const config = {
     matcher: [
         /*
