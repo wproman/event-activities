@@ -1,9 +1,7 @@
 import EventFilters from "@/components/modules/Event/EventFilter";
 import getAllEventAndParticipents from "@/services/eventParticipents/getAllEventParticipents";
-
 import getAllReview from "@/services/review/getAllReview";
 import userInfo from "@/services/user/userInfo";
-
 
 export const dynamic = 'force-dynamic'
 
@@ -31,7 +29,11 @@ const MyEventPage = async () => {
     );
   }
 
-  if (eventAndParticipents.length === 0) {
+  if (!eventAndParticipents || 
+      (Array.isArray(eventAndParticipents) && eventAndParticipents.length === 0) ||
+      (typeof eventAndParticipents === 'object' && 
+       (!eventAndParticipents.hostedEvents || eventAndParticipents.hostedEvents.length === 0) &&
+       (!eventAndParticipents.joinedEvents || eventAndParticipents.joinedEvents.length === 0))) {
     return (
       <div className="flex justify-center mt-16">
         <div className="bg-gray-800 text-gray-200 border border-gray-700 p-8 rounded-xl shadow-lg max-w-md text-center">
