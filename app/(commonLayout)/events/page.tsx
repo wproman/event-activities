@@ -8,7 +8,7 @@
 // import EventGrid from "@/components/modules/Event/EventGrid";
 // import EventSearchFilters from "@/components/modules/Event/EventSearchFilters";
 // import { getEvents } from "@/services/event/allEvent";
-// import { getEventCategories } from "@/services/event/categoryService";
+
 // import { Suspense } from "react";
 
 // // ISR: Revalidate every 5 minutes for fresh events
@@ -66,3 +66,12 @@
 // };
 
 // export default EventsPage;
+
+
+const page = () => {
+  return (
+    <div>comon layout eventpage</div>
+  )
+}
+
+export default page
