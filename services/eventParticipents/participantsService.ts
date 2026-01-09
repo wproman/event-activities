@@ -48,12 +48,17 @@ const BACKEND_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhos
  * Get ALL participants from ALL events hosted by the current host
  * For the ManageParticipantsPage
  */
+// participantService.ts - getAllHostEventParticipants ফাংশন
+
 export const getAllHostEventParticipants = async (): Promise<AllParticipantsResponse> => {
   try {
     const accessToken = await getCookie("accessToken");
+    const apiUrl = `${BACKEND_API_URL}/participants/host/all`;
+    
+    console.log("🔵 [Service] Making API call to:", apiUrl);
     
     const response = await fetch(
-      `${BACKEND_API_URL}/participants/host/all`,
+      apiUrl,
       {
         method: "GET",
         headers: {
@@ -64,14 +69,34 @@ export const getAllHostEventParticipants = async (): Promise<AllParticipantsResp
       }
     );
 
+    console.log("🟡 [Service] Response status:", response.status);
+    
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Failed to fetch participants: ${response.statusText}`);
+      // Get error message safely
+      let errorMessage = `HTTP Error: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // If not JSON, get text
+        const errorText = await response.text();
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage);
     }
 
-    return await response.json();
+    // ✅ FIX: Directly parse the response
+    const result: AllParticipantsResponse = await response.json();
+    console.log("🟢 [Service] API success");
+    return result;
+    
   } catch (error) {
-    console.error("Error fetching all host participants:", error);
+    console.error("🔴 [Service] Fetch error:", error);
+    
+    // Re-throw with better message
+    if (error instanceof SyntaxError) {
+      throw new Error("Invalid JSON response from server");
+    }
     throw error;
   }
 };

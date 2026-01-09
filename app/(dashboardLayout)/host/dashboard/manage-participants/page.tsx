@@ -55,24 +55,37 @@ const ManageParticipantsPage = () => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-// ✅ BEST OPTION - সরাসরি useEffect-এর ভেতরে
+// ManageParticipantsPage.tsx - fetchData function
+
 useEffect(() => {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const participantsResponse = await getAllHostEventParticipants();
+      console.log("Fetching participants data...");
       
-      if (participantsResponse.success && participantsResponse.data) {
-        setParticipants(participantsResponse.data.participants || []);
-        setStats(participantsResponse.data.stats);
+      // Call the service
+      const participantsResponse = await getAllHostEventParticipants();
+      console.log("API Response received:", participantsResponse);
+      
+      // ✅ Check the structure properly
+      if (participantsResponse && participantsResponse.success) {
+        // Make sure data exists
+        if (participantsResponse.data) {
+          setParticipants(participantsResponse.data.participants || []);
+          setStats(participantsResponse.data.stats || null);
+        } else {
+          console.warn("API returned success but no data");
+          setParticipants([]);
+          setStats(null);
+        }
       } else {
-        throw new Error(participantsResponse.message || "Failed to load participants");
+        throw new Error(participantsResponse?.message || "Failed to load participants");
       }
 
     } catch (err: any) {
-      console.error("Error fetching data:", err);
+      console.error("❌ Error fetching data:", err);
       setError(err.message || "Failed to load participants data");
       setParticipants([]);
       setStats(null);
@@ -82,7 +95,7 @@ useEffect(() => {
   };
 
   fetchData();
-}, []); // ✅ খালি array ঠিক আছে কারণ fetchData ভেতরে declare
+}, []);
 // ManageParticipantsPage.tsx - fetchData function-এ
 const fetchData = async () => {
   setLoading(true);
