@@ -1,55 +1,48 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { getCookie } from "../auth/tokenHandlers";
 
-const leaveEvent = async (eventId: string) => {
+
+export interface LeaveEventResponse {
+  success: boolean;
+  message: string;
+  data: {
+    event: {
+      id: string;
+      title: string;
+      date: string;
+      hostName: string;
+      hostEmail: string;
+    };
+    user: {
+      id: string;
+      name: string;
+    };
+    refundData: any | null;
+    requiresRefund: boolean;
+    refundAmount: number | null;
+    paymentId: string | null;
+  };
+}
+
+export async function leaveEvent(eventId: string): Promise<LeaveEventResponse> {
   try {
-    // Bangla: Client-side cookie থেকে accessToken নিচ্ছি
-    // English: Getting token from client cookies
-    const accessToken = await getCookie("accessToken");
-
-    if (!accessToken) {
-      return {
-        success: false,
-        message: "User is not authenticated!",
-      };
-    }
-
-    // Bangla: API request eventId সহ পাঠানো হচ্ছে
-    // English: Sending API request with eventId
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${eventId}/leave`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/${eventId}/leave`,
       {
-        method: "DELETE",
+        method: "DELETE", 
         headers: {
           "Content-Type": "application/json",
-          // Cookie: `accessToken=${accessToken}`, // PERFECT way
-          Authorization: `Bearer ${accessToken}`,
         },
-
-        credentials: "include", // Cookies handled automatically
-      },
+        credentials: "include", // For cookies if using JWT in cookies
+      }
     );
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-
-      return {
-        success: false,
-        message: errorData?.message || "Failed to leave event",
-      };
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to leave event");
     }
 
-    const data = await response.json();
-
-    return data;
+    return await response.json();
   } catch (error: any) {
-    console.log(error);
-    return {
-      success: false,
-      message: error?.message || "Unexpected error occurred",
-    };
+    console.error("Error leaving event:", error);
+    throw error;
   }
-};
-
-export default leaveEvent;
+}

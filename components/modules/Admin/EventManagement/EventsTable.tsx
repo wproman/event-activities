@@ -80,6 +80,7 @@ import { Event } from "@/app/types";
 import EventApproval from "@/components/modules/Admin/EventManagement/EventApprove";
 import { useState } from "react";
 
+
 interface EventsTableProps {
   events: Event[];
 }

@@ -25,7 +25,7 @@ export type EventStatus =
 export type UserStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
 
 // Payment Status - Based on your schema
-export type PaymentStatus = "pending" | "completed" | "failed";
+export type PaymentStatus = "pending" | "completed" | "failed" | "succeeded";
 
 // User Interface - Match your Prisma User model
 export interface User {
@@ -92,6 +92,7 @@ export interface Review {
 }
 
 // Event Participant Interface - Match your Prisma EventParticipant model
+
 export interface EventParticipant {
   id: string;
   eventId: string;
@@ -99,9 +100,25 @@ export interface EventParticipant {
   event: Event;
   user: User;
   createdAt: Date;
+  
+  status?: string; 
+  payment?: Payment | null; 
+    hasPaid?: boolean;
+}
+// Add this type for stats
+export interface ParticipantStats {
+  totalParticipants: number;
+  activeEvents: number;
+  totalRevenue: number;
+  pendingPayments: number;
+  paidParticipants: number;
+  pendingParticipants: number;
+  upcomingEvents: number;
+  completedEvents: number;
+  totalEvents: number;
+  averageParticipantsPerEvent: number;
 }
 
-// Payment Interface - Match your Prisma Payment model
 export interface Payment {
   id: string;
   userId: string;
@@ -206,5 +223,111 @@ export interface EventResponse {
   data: {
     events: Event[];
     meta: Meta;
+  };
+}
+
+
+export interface AllParticipantsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    participants: EventParticipant[];
+    stats: ParticipantStats;
+    meta?: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+
+// Payment Status Labels যোগ করুন
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  pending: "Pending",
+  completed: "Completed",
+  succeeded: "Succeeded", 
+  failed: "Failed"
+};
+
+
+
+
+
+
+// Payment Statistics Types (আগে থেকে ছিল, verify করুন)
+export interface PaymentStats {
+  totalRevenue: number;
+  todayRevenue: number;
+  monthRevenue: number;
+  totalPayments: number;
+  statusCounts: {
+    pending: number;
+    succeeded: number;
+    completed: number;
+    failed: number;
+  };
+  revenueByStatus: {
+    pending: number;
+    succeeded: number;
+    completed: number;
+    failed: number;
+  };
+  revenueByEventType: Record<string, number>;
+  averagePaymentAmount: number;
+}
+
+export interface HostRevenueStats {
+  totalRevenue: number;
+  pendingRevenue: number;
+  completedRevenue: number;
+  failedRevenue: number;
+  totalPayments: number;
+  pendingPayments: number;
+  completedPayments: number;
+  failedPayments: number;
+  averagePaymentAmount: number;
+  revenueByEvent: Array<{
+    eventId: string;
+    eventTitle: string;
+    totalRevenue: number;
+    paymentCount: number;
+    completedPayments: number;
+  }>;
+  revenueByMonth: Array<{
+    month: string;
+    revenue: number;
+    paymentCount: number;
+  }>;
+}
+
+export interface FormattedPayment {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  transactionId?: string;
+  stripePaymentIntentId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  event: {
+    id: string;
+    title: string;
+    date: Date;
+    location: string;
+    fee: number;
+  };
+  user: User;
+  isRefundable: boolean;
+}
+
+export interface HostPaymentsResponse {
+  payments: FormattedPayment[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
 }
