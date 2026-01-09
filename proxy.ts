@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) { // proxy ta call kothai korb
 
     let userRole: UserRole | null = null;
     if (accessToken) { // support
-        const verifiedToken: JwtPayload | string = jwt.verify(accessToken, process.env.JWT_SECRET as string);
+        const verifiedToken: JwtPayload | string = jwt.verify(accessToken, process.env.JWT_SECRET_ACCESS as string);
 
         if (typeof verifiedToken === "string") {
             deleteCookie("accessToken");
