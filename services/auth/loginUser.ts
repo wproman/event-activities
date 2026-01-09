@@ -92,7 +92,7 @@ export const loginUser = async (_currentState: any, formData: any): Promise<any>
         // Verify token to get user role
         const verifiedToken: JwtPayload | string = jwt.verify(
             accessToken, 
-            process.env.JWT_SECRET as string
+            process.env.JWT_ACCESS_SECRET as string
         );
 
         if (typeof verifiedToken === "string") { 
