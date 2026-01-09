@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { getCookie } from "../auth/tokenHandlers";
 
-const approveEvent = async (eventId: string, updatedData: any) => {
+const approveEvent = async (eventId: string, isApproved: boolean) => {
   try {
     const accessToken = await getCookie("accessToken");
 
@@ -13,17 +12,18 @@ const approveEvent = async (eventId: string, updatedData: any) => {
       };
     }
 
+    // CORRECT: /event/{id}/approve (not /admin/event/{id}/approve)
+    // But likely under admin routes, so: /admin/event/{id}/approve
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/admins/event/${eventId}/approve`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/admin/event/${eventId}/approve`,
       {
-        method: "PATCH",
+        method: "PATCH", // CORRECT METHOD: PATCH
         headers: {
           "Content-Type": "application/json",
-          // Cookie: `accessToken=${accessToken}`, // PERFECT way
           Authorization: `Bearer ${accessToken}`,
         },
         credentials: "include",
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify({ isApproved }), // REQUIRED BODY
       },
     );
 
@@ -32,16 +32,14 @@ const approveEvent = async (eventId: string, updatedData: any) => {
 
       return {
         success: false,
-        message: errorData?.message || "Failed to updte event",
+        message: errorData?.message || "Failed to approve event",
       };
     }
 
     const data = await response.json();
-
     return data;
   } catch (error: any) {
     console.log(error);
-
     return {
       success: false,
       message: error?.message || "Unexpected error occurred",
