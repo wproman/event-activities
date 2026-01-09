@@ -1,93 +1,41 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
-  getDefaultDashboardRoute,
   getRouteOwner,
-  isAuthRoute,
-  UserRole,
+  isAuthRoute
 } from "./lib/auth-utils";
-import { deleteCookie } from "./services/auth/tokenHandlers";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-
   const accessToken = request.cookies.get("accessToken")?.value || null;
+  const refreshToken = request.cookies.get("refreshToken")?.value || null;
 
-  let userRole: UserRole | null = null;
-  if (accessToken) {
-    try {
-      const verifiedToken: JwtPayload | string = jwt.verify(
-        accessToken,
-        process.env.JWT_ACCESS_SECRET as string,
-      );
-
-      if (typeof verifiedToken === "string") {
-        await deleteCookie("accessToken");
-        await deleteCookie("refreshToken");
-
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
-
-      userRole = verifiedToken.role;
-    } catch (error) {
-      // Token is invalid, expired, or malformed
-      console.error("Token verification failed:", error);
-      // cookieStore.delete("accessToken");
-      // cookieStore.delete("refreshToken");
-      await deleteCookie("accessToken");
-      await deleteCookie("refreshToken");
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
-
-  const routerOwner = getRouteOwner(pathname);
-  //path = /doctor/appointments => "DOCTOR"
-  //path = /my-profile => "COMMON"
-  //path = /login => null
+  // Just check if token exists, don't verify it
+  const hasValidToken = accessToken && refreshToken;
 
   const isAuth = isAuthRoute(pathname);
 
-  // Rule 1 : User is logged in and trying to access auth route. Redirect to default dashboard
-  if (accessToken && isAuth) {
+  // Rule 1: User is logged in and trying to access auth route
+  if (hasValidToken && isAuth) {
     return NextResponse.redirect(
-      new URL(getDefaultDashboardRoute(userRole as UserRole), request.url),
+      new URL("/dashboard", request.url), // Simple redirect
     );
   }
 
-  // Rule 2 : User is trying to access open public route
-  if (routerOwner === null) {
+  // Rule 2: Open public route
+  if (getRouteOwner(pathname) === null) {
     return NextResponse.next();
   }
 
-  // Rule 1 & 2 for open public routes and auth routes
-
-  if (!accessToken) {
+  // Rule 3: Protected route without token
+  if (!hasValidToken) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Rule 3 : User is trying to access common protected route
-  if (routerOwner === "COMMON") {
-    return NextResponse.next();
-  }
-
-  // Rule 4 : User is trying to access role based protected route
-  if (
-    routerOwner === "ADMIN" ||
-    routerOwner === "HOST" ||
-    routerOwner === "USER"
-  ) {
-    if (userRole !== routerOwner) {
-      return NextResponse.redirect(
-        new URL(getDefaultDashboardRoute(userRole as UserRole), request.url),
-      );
-    }
-  }
-  console.log(userRole);
-
+  // User has token, allow access
   return NextResponse.next();
 }
 
