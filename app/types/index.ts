@@ -25,7 +25,7 @@ export type EventStatus =
 export type UserStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
 
 // Payment Status - Based on your schema
-export type PaymentStatus = "pending" | "completed" | "failed";
+export type PaymentStatus = "pending" | "completed" | "failed" | "succeeded";
 
 // User Interface - Match your Prisma User model
 export interface User {
@@ -92,6 +92,7 @@ export interface Review {
 }
 
 // Event Participant Interface - Match your Prisma EventParticipant model
+
 export interface EventParticipant {
   id: string;
   eventId: string;
@@ -99,9 +100,25 @@ export interface EventParticipant {
   event: Event;
   user: User;
   createdAt: Date;
+  
+  status?: string; 
+  payment?: Payment | null; 
+    hasPaid?: boolean;
+}
+// Add this type for stats
+export interface ParticipantStats {
+  totalParticipants: number;
+  activeEvents: number;
+  totalRevenue: number;
+  pendingPayments: number;
+  paidParticipants: number;
+  pendingParticipants: number;
+  upcomingEvents: number;
+  completedEvents: number;
+  totalEvents: number;
+  averageParticipantsPerEvent: number;
 }
 
-// Payment Interface - Match your Prisma Payment model
 export interface Payment {
   id: string;
   userId: string;
@@ -210,3 +227,26 @@ export interface EventResponse {
 }
 
 
+export interface AllParticipantsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    participants: EventParticipant[];
+    stats: ParticipantStats;
+    meta?: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+
+// Payment Status Labels যোগ করুন
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  pending: "Pending",
+  completed: "Completed",
+  succeeded: "Succeeded", 
+  failed: "Failed"
+};
