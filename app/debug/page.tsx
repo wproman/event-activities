@@ -3,7 +3,7 @@ export default async function DebugPage() {
   
   return (
     <div>
-      <h1>Debug Page</h1>
+      <h1>Debug Page-1111</h1>
       <p>JWT_ACCESS_SECRET exists: {secret ? "YES" : "NO"}</p>
       <p>Length: {secret?.length}</p>
       <p>First 5 chars: {secret?.substring(0, 5)}</p>
