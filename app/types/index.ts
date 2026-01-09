@@ -250,3 +250,84 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
   succeeded: "Succeeded", 
   failed: "Failed"
 };
+
+
+
+
+
+
+// Payment Statistics Types (আগে থেকে ছিল, verify করুন)
+export interface PaymentStats {
+  totalRevenue: number;
+  todayRevenue: number;
+  monthRevenue: number;
+  totalPayments: number;
+  statusCounts: {
+    pending: number;
+    succeeded: number;
+    completed: number;
+    failed: number;
+  };
+  revenueByStatus: {
+    pending: number;
+    succeeded: number;
+    completed: number;
+    failed: number;
+  };
+  revenueByEventType: Record<string, number>;
+  averagePaymentAmount: number;
+}
+
+export interface HostRevenueStats {
+  totalRevenue: number;
+  pendingRevenue: number;
+  completedRevenue: number;
+  failedRevenue: number;
+  totalPayments: number;
+  pendingPayments: number;
+  completedPayments: number;
+  failedPayments: number;
+  averagePaymentAmount: number;
+  revenueByEvent: Array<{
+    eventId: string;
+    eventTitle: string;
+    totalRevenue: number;
+    paymentCount: number;
+    completedPayments: number;
+  }>;
+  revenueByMonth: Array<{
+    month: string;
+    revenue: number;
+    paymentCount: number;
+  }>;
+}
+
+export interface FormattedPayment {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  transactionId?: string;
+  stripePaymentIntentId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  event: {
+    id: string;
+    title: string;
+    date: Date;
+    location: string;
+    fee: number;
+  };
+  user: User;
+  isRefundable: boolean;
+}
+
+export interface HostPaymentsResponse {
+  payments: FormattedPayment[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}

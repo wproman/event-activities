@@ -47,7 +47,7 @@ export const hostNavItems: NavSection[] = [
         roles: ["HOST"],
       },
       {
-        title: "Manage User",
+        title: "Manage Participants",
         href: "/host/dashboard/manage-participants",
         icon: "participants", // ✅ String
         // badge: "3",
@@ -88,23 +88,23 @@ export const userNavItems: NavSection[] = [
       },
     ],
   },
-  {
-    title: "All events",
-    items: [
-      {
-        title: "My Events",
-        href: "/dashboard/my-event",
-        icon: "FileText", // ✅ String
-        roles: ["USER"],
-      },
-      // {
-      //     title: "Health Records",
-      //     href: "/dashboard/health-records",
-      //     icon: "Activity", // ✅ String
-      //     roles: ["USER"],
-      // },
-    ],
-  },
+  // {
+  //   title: "All events",
+  //   items: [
+  //     {
+  //       title: "My Events",
+  //       href: "/dashboard/my-event",
+  //       icon: "FileText", // ✅ String
+  //       roles: ["USER"],
+  //     },
+  //     // {
+  //     //     title: "Health Records",
+  //     //     href: "/dashboard/health-records",
+  //     //     icon: "Activity", // ✅ String
+  //     //     roles: ["USER"],
+  //     // },
+  //   ],
+  // },
 ];
 
 export const adminNavItems: NavSection[] = [
