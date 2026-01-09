@@ -43,7 +43,7 @@ export const loginUser = async (_currentState: any, formData: any): Promise<any>
             }
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`, {
             method: "POST",
             body: JSON.stringify(loginData),
             headers: {
