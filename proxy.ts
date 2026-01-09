@@ -9,23 +9,6 @@ import {
 } from "./lib/auth-utils";
 import { deleteCookie } from "./services/auth/tokenHandlers";
 
-// Helper function to clean JWT secret (remove surrounding quotes)
-const cleanJwtSecret = (secret: string): string => {
-  if (!secret) return secret;
-  
-  // Remove surrounding double quotes
-  if (secret.startsWith('"') && secret.endsWith('"')) {
-    return secret.slice(1, -1);
-  }
-  
-  // Remove surrounding single quotes
-  if (secret.startsWith("'") && secret.endsWith("'")) {
-    return secret.slice(1, -1);
-  }
-  
-  return secret;
-};
-
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -35,46 +18,24 @@ export async function proxy(request: NextRequest) {
   let userRole: UserRole | null = null;
   if (accessToken) {
     try {
-      // Get and clean the JWT secret
-      const rawSecret = process.env.JWT_ACCESS_SECRET as string;
-      const cleanedSecret = cleanJwtSecret(rawSecret);
-      
-      // Debug logging (remove in production)
-      console.log("JWT Debug:", {
-        hasToken: !!accessToken,
-        tokenLength: accessToken?.length,
-        rawSecretLength: rawSecret?.length,
-        cleanedSecretLength: cleanedSecret?.length,
-        rawSecretFirstLast: rawSecret ? `${rawSecret[0]}...${rawSecret[rawSecret.length - 1]}` : 'none',
-        cleanedSecretFirstLast: cleanedSecret ? `${cleanedSecret[0]}...${cleanedSecret[cleanedSecret.length - 1]}` : 'none'
-      });
-
       const verifiedToken: JwtPayload | string = jwt.verify(
         accessToken,
-        cleanedSecret,
+        process.env.JWT_ACCESS_SECRET as string,
       );
 
       if (typeof verifiedToken === "string") {
         await deleteCookie("accessToken");
         await deleteCookie("refreshToken");
+
         return NextResponse.redirect(new URL("/login", request.url));
       }
 
       userRole = verifiedToken.role;
-    } catch (error: any) {
+    } catch (error) {
       // Token is invalid, expired, or malformed
-      console.error("Token verification failed:", error.message);
-      console.error("Error details:", error);
-      
-      // Try one more approach - check if token is expired
-      try {
-        const rawSecret = process.env.JWT_ACCESS_SECRET as string;
-        const decoded = jwt.decode(accessToken);
-        console.log("Decoded token:", decoded);
-      } catch (decodeError) {
-        console.error("Cannot decode token:", decodeError);
-      }
-      
+      console.error("Token verification failed:", error);
+      // cookieStore.delete("accessToken");
+      // cookieStore.delete("refreshToken");
       await deleteCookie("accessToken");
       await deleteCookie("refreshToken");
       return NextResponse.redirect(new URL("/login", request.url));
@@ -82,6 +43,10 @@ export async function proxy(request: NextRequest) {
   }
 
   const routerOwner = getRouteOwner(pathname);
+  //path = /doctor/appointments => "DOCTOR"
+  //path = /my-profile => "COMMON"
+  //path = /login => null
+
   const isAuth = isAuthRoute(pathname);
 
   // Rule 1 : User is logged in and trying to access auth route. Redirect to default dashboard
@@ -121,12 +86,20 @@ export async function proxy(request: NextRequest) {
       );
     }
   }
+  console.log(userRole);
 
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.well-known).*)",
   ],
 };
