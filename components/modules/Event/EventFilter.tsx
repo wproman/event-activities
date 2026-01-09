@@ -456,12 +456,12 @@
 
 import type {
   Event,
-  EventParticipant,
   EventType,
   EventFilters as FilterType,
   Review,
-  User,
+  User
 } from "@/app/types";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -504,10 +504,16 @@ interface BaseEventFiltersProps {
   mode: EventFilterMode;
 }
 
-// Props for USER_EVENTS mode
+// Add this type near your other type imports
+type MyEventsResponse = {
+  hostedEvents: Event[];
+  joinedEvents: Event[];
+};
+
+// Update the UserEventsProps interface
 interface UserEventsProps extends BaseEventFiltersProps {
   mode: "USER_EVENTS";
-  eventAndParticipants: EventParticipant[];
+  eventAndParticipants: MyEventsResponse; // Changed to match API response
   reviews: Review[];
   user: User;
 }
@@ -541,123 +547,140 @@ const EventFilters = (props: EventFiltersProps) => {
     "UPCOMING",
   );
 
-  // Handle USER_EVENTS mode
-  if (props.mode === "USER_EVENTS") {
-    const { eventAndParticipants } = props;
-    const now = new Date();
+ // Handle USER_EVENTS mode
+if (props.mode === "USER_EVENTS") {
+  const { eventAndParticipants } = props;
+  const now = new Date();
 
-    const filteredEvents = eventAndParticipants?.filter((item) => {
-      const eventDate = new Date(item.event?.date || "");
-      return userEventsFilter === "UPCOMING"
-        ? eventDate >= now
-        : eventDate < now;
-    });
+  // Check if eventAndParticipants is the new structure (object with hostedEvents and joinedEvents)
+  let eventsArray: any[] = [];
 
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">My Registered Events</CardTitle>
-            <div className="flex gap-2">
-              <Button
-                variant={
-                  userEventsFilter === "UPCOMING" ? "default" : "outline"
-                }
-                size="sm"
-                onClick={() => setUserEventsFilter("UPCOMING")}
-                className="gap-1"
-              >
-                <Clock className="w-3 h-3" />
-                Upcoming
-              </Button>
-              <Button
-                variant={userEventsFilter === "PAST" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setUserEventsFilter("PAST")}
-                className="gap-1"
-              >
-                <Calendar className="w-3 h-3" />
-                Past
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Event</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Participants</TableHead>
-                <TableHead>Fee</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map((item) => {
-                  const event = item.event;
-                  const isFull =
-                    event.maxParticipants &&
-                    event._count?.participants &&
-                    event._count.participants >= event.maxParticipants;
-
-                  return (
-                    <TableRow key={event.id}>
-                      <TableCell className="font-medium">
-                        {event.title}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {event.location}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(event.date).toLocaleDateString("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          {event._count?.participants || 0}
-                          {event.maxParticipants && `/${event.maxParticipants}`}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="w-3 h-3" />
-                          {event.fee > 0 ? `$${event.fee}` : "Free"}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={isFull ? "destructive" : "default"}>
-                          {isFull ? "Full" : "Joined"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center py-8 text-muted-foreground"
-                  >
-                    No {userEventsFilter.toLowerCase()} events found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    );
+  if (eventAndParticipants && typeof eventAndParticipants === 'object') {
+    // If it has hostedEvents or joinedEvents properties, it's the new structure
+    if ('hostedEvents' in eventAndParticipants || 'joinedEvents' in eventAndParticipants) {
+      // Combine both arrays
+      eventsArray = [
+        ...(eventAndParticipants.hostedEvents || []),
+        ...(eventAndParticipants.joinedEvents || [])
+      ];
+    } else if (Array.isArray(eventAndParticipants)) {
+      // Old structure: already an array
+      eventsArray = eventAndParticipants;
+    }
   }
+
+  const filteredEvents = eventsArray.filter((event) => {
+    const eventDate = new Date(event?.date || "");
+    return userEventsFilter === "UPCOMING"
+      ? eventDate >= now
+      : eventDate < now;
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl">My Registered Events</CardTitle>
+          <div className="flex gap-2">
+            <Button
+              variant={
+                userEventsFilter === "UPCOMING" ? "default" : "outline"
+              }
+              size="sm"
+              onClick={() => setUserEventsFilter("UPCOMING")}
+              className="gap-1"
+            >
+              <Clock className="w-3 h-3" />
+              Upcoming
+            </Button>
+            <Button
+              variant={userEventsFilter === "PAST" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setUserEventsFilter("PAST")}
+              className="gap-1"
+            >
+              <Calendar className="w-3 h-3" />
+              Past
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Event</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Participants</TableHead>
+              <TableHead>Fee</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event) => {
+                // Note: event is now the event object directly, not nested under .event
+                const isFull =
+                  event.maxParticipants &&
+                  event._count?.participants &&
+                  event._count.participants >= event.maxParticipants;
+
+                return (
+                  <TableRow key={event.id}>
+                    <TableCell className="font-medium">
+                      {event.title}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {event.location}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(event.date).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {event._count?.participants || 0}
+                        {event.maxParticipants && `/${event.maxParticipants}`}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="w-3 h-3" />
+                        {parseInt(event.fee) > 0 ? `$${event.fee}` : "Free"}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={isFull ? "destructive" : "default"}>
+                        {isFull ? "Full" : "Joined"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-8 text-muted-foreground"
+                >
+                  No {userEventsFilter.toLowerCase()} events found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
 
   // Handle BOOK_EVENTS and PUBLIC modes (they share the same filter structure)
   const { filters, onFiltersChange, onClear, locations } = props;
