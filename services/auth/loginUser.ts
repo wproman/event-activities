@@ -8,6 +8,7 @@ import {
   isValidRedirectForRole,
   UserRole,
 } from "@/lib/auth-utils";
+import { cleanJwtSecret } from "@/lib/jwt-utils";
 import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zodValidator";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -119,6 +120,7 @@ import { setCookie } from "./tokenHandlers";
 //   }
 // };
 
+// In /services/auth/loginUser.ts
 export const loginUser = async (
   _currentState: any,
   formData: any,
@@ -139,7 +141,7 @@ export const loginUser = async (
     
     const validatedPayload = validation.data;
 
-    // Make API call to YOUR backend
+    // Make API call to backend
     const res = await serverFetch.post("/auth/login", {
       body: JSON.stringify(validatedPayload),
       headers: {
@@ -149,22 +151,22 @@ export const loginUser = async (
     
     const result = await res.json();
     
-    // Debug: log the response
-    console.log("Login API Response:", result);
-
     // Check if login was successful
     if (!result.success) {
       throw new Error(result.message || "Login failed");
     }
 
-    // Get tokens from RESPONSE BODY (not cookies)
+    // Get tokens from RESPONSE BODY
     const { accessToken, refreshToken } = result.data;
 
     if (!accessToken || !refreshToken) {
       throw new Error("Tokens not found in response");
     }
 
-    // Store tokens in cookies
+    // Store tokens in localStorage (for client-side access)
+    // Note: You'll need to pass these to middleware via cookies
+    
+    // Store tokens in cookies for middleware access
     await setCookie("accessToken", accessToken, {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
@@ -181,32 +183,33 @@ export const loginUser = async (
       sameSite: "lax",
     });
 
-    // Verify the token (optional)
+    // Also store in localStorage for client-side use
+    // You'll need a client-side context/provider for this
+    
+    // Get user role from token (optional)
+    let userRole: UserRole = "USER"; // default
     try {
+      const cleanedSecret = cleanJwtSecret(process.env.JWT_ACCESS_SECRET as string);
       const verifiedToken: JwtPayload | string = jwt.verify(
         accessToken,
-        process.env.JWT_ACCESS_SECRET as string,
+        cleanedSecret,
       );
-
-      if (typeof verifiedToken === "string") {
-        throw new Error("Invalid token");
-      }
-
-      const userRole: UserRole = verifiedToken.role;
-
-      // Handle redirection
-      const redirectPath = redirectTo && isValidRedirectForRole(redirectTo.toString(), userRole) 
-        ? redirectTo.toString()
-        : getDefaultDashboardRoute(userRole);
-
-      redirect(`${redirectPath}?loggedIn=true`);
       
+      if (typeof verifiedToken !== "string") {
+        userRole = verifiedToken.role;
+      }
     } catch (jwtError) {
-      console.error("JWT Verification Error:", jwtError);
-      // Still redirect even if JWT verification fails (for development)
-      redirect(`/dashboard?loggedIn=true`);
+      console.warn("JWT verification in login failed:", jwtError);
+      // Continue anyway, middleware will verify
     }
 
+    // Handle redirection
+    const redirectPath = redirectTo && isValidRedirectForRole(redirectTo.toString(), userRole) 
+      ? redirectTo.toString()
+      : getDefaultDashboardRoute(userRole);
+
+    redirect(`${redirectPath}?loggedIn=true`);
+    
   } catch (error: any) {
     // Re-throw NEXT_REDIRECT errors
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {
