@@ -18,7 +18,7 @@ const blockUser = async (updatedData: any, accountId: string) => {
     // English: Sending API request with eventId
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/admins/accounts/${accountId}/block`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/admin/accounts/${accountId}/block`,
       {
         method: "PATCH",
         headers: {
