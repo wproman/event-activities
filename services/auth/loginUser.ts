@@ -103,7 +103,7 @@ export const loginUser = async (_currentState: any, formData: any): Promise<any>
             path: refreshTokenObject.Path || "/",
             sameSite: refreshTokenObject['SameSite'] || "none",
         });
-        const verifiedToken: JwtPayload | string = jwt.verify(accessTokenObject.accessToken, process.env.JWT_ACCESS_SECRET as string);
+        const verifiedToken: JwtPayload | string = jwt.verify(accessTokenObject.accessToken, process.env.NEXT_PUBLIC_JWT_ACCESS_SECRET as string);
 
         if (typeof verifiedToken === "string") { 
             throw new Error("Invalid token"); 

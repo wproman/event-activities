@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
             
             // Get JWT secret with fallback
             const jwtSecret = process.env.JWT_ACCESS_SECRET;
-            console.log('🔐 JWT_SECRET exists:', !!jwtSecret);
+            
             
             if (!jwtSecret) {
                 throw new Error('JWT_ACCESS_SECRET is not defined in environment variables');
