@@ -39,39 +39,52 @@ function PaymentSuccessContent() {
   const [paymentData, setPaymentData] = useState<any>(null);
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      if (!sessionId) {
-        setError("No session ID found in URL");
-        setLoading(false);
-        return;
-      }
+// Update the verifyPayment function in your useEffect
+const verifyPayment = async () => {
+  if (!sessionId) {
+    setError("No session ID found in URL");
+    setLoading(false);
+    return;
+  }
 
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/payments/verify?session_id=${sessionId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
+  try {
+    // Get access token from localStorage
+    const accessToken = localStorage.getItem('accessToken');
+    
+    if (!accessToken) {
+      setError("You need to be logged in to verify payment. Please login and try again.");
+      setLoading(false);
+      return;
+    }
 
-        const result = await response.json();
-        console.log("payement-111",result)
-        if (result.success) {
-          setSuccess(true);
-          setPaymentData(result.data);
-        } else {
-          setError(result.message || "Payment verification failed");
-        }
-      } catch (err: any) {
-        console.error("Payment verification error:", err);
-        setError(err.message || "Failed to verify payment. Please try again.");
-      } finally {
-        setLoading(false);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/payments/verify?session_id=${sessionId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`, // Add this line
+        },
+        credentials: "include", // Keep this for cookies if needed
       }
+    );
+
+    const result = await response.json();
+    console.log("Payment verification result:", result);
+    
+    if (result.success) {
+      setSuccess(true);
+      setPaymentData(result.data);
+    } else {
+      setError(result.message || "Payment verification failed");
+    }
+  } catch (err: any) {
+    console.error("Payment verification error:", err);
+    setError(err.message || "Failed to verify payment. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+
     };
 
     verifyPayment();
